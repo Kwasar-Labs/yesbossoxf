@@ -14,6 +14,12 @@ export interface Task extends Timestamps {
   createdBy: string;
   tags: string[];
   organizationId: string;
+  reminders?: Date[];
+  recurrenceRule?: string;
+  activity?: any[];
+  comments?: any[];
+  subtasks?: any[];
+  followUpDate?: Date;
 }
 
 export interface TaskCreateInput {
@@ -24,15 +30,26 @@ export interface TaskCreateInput {
   assigneeId?: string;
   dueDate?: string;
   tags?: string[];
+  reminders?: string[];
+  recurrenceRule?: string;
+  followUpDate?: string;
+  activity?: any[];
+  comments?: any[];
+  subtasks?: any[];
 }
 
 export interface TaskUpdateInput {
   title?: string;
   description?: string;
   projectId?: string;
+  assigneeId?: string;
   priority?: Priority;
   dueDate?: string;
   tags?: string[];
+  reminders?: string[];
+  recurrenceRule?: string;
+  followUpDate?: string;
+  subtasks?: any[];
 }
 
 export interface TaskStatusUpdateInput {

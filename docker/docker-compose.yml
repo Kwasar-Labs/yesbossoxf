@@ -1,0 +1,129 @@
+# YesBoss Backend - Docker Compose (Production)
+# Usage: docker compose up -d
+
+services:
+  # ---- MongoDB ----
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: yesboss
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-changeme}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - yesboss-net
+
+  # ---- Auth Service ----
+  auth:
+    build:
+      context: ..
+      dockerfile: docker/auth.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      AUTH_PORT: 3001
+      MONGO_URI: mongodb://yesboss:${MONGO_PASSWORD:-changeme}@mongo:27017/yesboss?authSource=admin
+      JWT_PRIVATE_KEY_PATH: /app/keys/private.pem
+      JWT_PUBLIC_KEY_PATH: /app/keys/public.pem
+      YESBOSS_API_KEY: ${YESBOSS_API_KEY:-changeme-to-secure-key}
+      NODE_ENV: production
+    volumes:
+      - ${KEYS_DIR:-../keys}:/app/keys:ro
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/auth/login"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - yesboss-net
+
+  # ---- Workforce Service ----
+  workforce:
+    build:
+      context: ..
+      dockerfile: docker/workforce.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      WORKFORCE_PORT: 3002
+      MONGO_URI: mongodb://yesboss:${MONGO_PASSWORD:-changeme}@mongo:27017/yesboss?authSource=admin
+      JWT_PUBLIC_KEY_PATH: /app/keys/public.pem
+      YESBOSS_API_KEY: ${YESBOSS_API_KEY:-changeme-to-secure-key}
+      NODE_ENV: production
+    volumes:
+      - ${KEYS_DIR:-../keys}:/app/keys:ro
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3002/tasks"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - yesboss-net
+
+  # ---- API Gateway ----
+  gateway:
+    build:
+      context: ..
+      dockerfile: docker/gateway.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GATEWAY_PORT: 3000
+      AUTH_PORT: 3001
+      WORKFORCE_PORT: 3002
+      NODE_ENV: production
+    depends_on:
+      auth:
+        condition: service_healthy
+      workforce:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - yesboss-net
+
+  # ---- Web Frontend ----
+  web:
+    build:
+      context: ..
+      dockerfile: docker/web.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3000/api
+        NEXT_PUBLIC_OPENCLAW_URL: http://localhost:4000
+    restart: unless-stopped
+    ports:
+      - "8080:3000"
+    depends_on:
+      gateway:
+        condition: service_healthy
+    networks:
+      - yesboss-net
+
+volumes:
+  mongo_data:
+
+networks:
+  yesboss-net:
+    driver: bridge

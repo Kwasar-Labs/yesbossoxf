@@ -12,22 +12,29 @@ const WORKFORCE_PORT = parseInt(process.env.WORKFORCE_PORT || "3002", 10);
 const app = express();
 
 app.use(cors());
-app.use(express.json());
 
 app.use(
-  "/api/auth",
+  "/api",
   createProxyMiddleware({
+    // The target here is just a default placeholder
     target: `http://localhost:${AUTH_PORT}`,
     changeOrigin: true,
-  }),
-);
-
-app.use(
-  "/api/workforce",
-  createProxyMiddleware({
-    target: `http://localhost:${WORKFORCE_PORT}`,
-    changeOrigin: true,
-  }),
+    pathRewrite: function (path, req) {
+      if (path.startsWith("/workforce")) return path.replace("/workforce", "");
+      if (path.startsWith("/chat") || path.startsWith("/communication")) return "/api" + path;
+      return path;
+    },
+    onProxyReq: (proxyReq, req, res) => { console.log('[Gateway] proxying ', req.method, req.originalUrl, 'to', proxyReq.path); },
+    router: function (req) {
+      if (req.url.startsWith("/workforce") || req.url.startsWith("/tasks") || req.url.startsWith("/projects") || req.url.startsWith("/assignments")) {
+        return `http://localhost:${WORKFORCE_PORT}`;
+      }
+      if (req.url.startsWith("/chat") || req.url.startsWith("/communication")) {
+        return `http://localhost:4000`;
+      }
+      return `http://localhost:${AUTH_PORT}`;
+    },
+  })
 );
 
 app.get("/health", (_req, res) => {

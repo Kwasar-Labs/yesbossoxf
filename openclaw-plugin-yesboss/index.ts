@@ -5,6 +5,7 @@
  * Follows the Tavily plugin pattern from the OpenClaw extensions ecosystem.
  */
 
+// @ts-ignore
 import { definePluginEntry, type AnyAgentTool } from "openclaw/plugin-sdk/plugin-entry";
 
 // Task tools
@@ -30,13 +31,16 @@ import { createListMyTasksTool } from "./src/tools/assignment-tools.js";
 // User tools
 import { createLookupUserTool } from "./src/tools/user-tools.js";
 
+// Knowledge Tools
+import { createLearnFactTool, createSearchKnowledgeTool } from "./src/tools/knowledge-tools.js";
+
 export default definePluginEntry({
   id: "yesboss",
   name: "YesBoss Workforce Management",
   description:
     "Manage tasks, projects, and teams through YesBoss via WhatsApp. Create tasks, update statuses, assign work, and query project progress.",
 
-  register(api) {
+  register(api: any) {
     const config = api.config?.plugins?.entries?.yesboss?.config as
       | { apiUrl?: string; apiKey?: string }
       | undefined;
@@ -63,5 +67,9 @@ export default definePluginEntry({
 
     // User lookup
     api.registerTool(createLookupUserTool(config) as AnyAgentTool);
+
+    // Knowledge base
+    api.registerTool(createLearnFactTool(config) as AnyAgentTool);
+    api.registerTool(createSearchKnowledgeTool(config) as AnyAgentTool);
   },
 });

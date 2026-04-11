@@ -1,0 +1,7 @@
+export enum FactCategory {
+  USER_SKILL = "USER_SKILL",
+  SOP = "SOP",
+  PROJECT_RULE = "PROJECT_RULE",
+  LESSON_LEARNED = "LESSON_LEARNED",
+  OTHER = "OTHER"
+}

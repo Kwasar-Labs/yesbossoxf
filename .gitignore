@@ -5,3 +5,6 @@ dist/
 *.key
 .DS_Store
 thumbs.db
+keys/
+.mongodb/
+mongodb.zip

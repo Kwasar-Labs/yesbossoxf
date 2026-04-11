@@ -1,0 +1,64 @@
+# YesBoss OpenClaw Plugin Configuration
+# ====================================================
+# After running `openclaw onboard`, merge this into your
+# ~/.openclaw/config.yaml to enable the YesBoss integration.
+#
+# What this does:
+#   1. Enables the YesBoss plugin (linked as local extension)
+#   2. Creates a dedicated "yesboss-agent" with YesBoss skills
+#   3. Routes all WhatsApp messages to the YesBoss agent
+#   4. Restricts WhatsApp DMs to whitelisted phone numbers
+#
+# ====================================================
+
+# --- Plugin Configuration ---
+plugins:
+  entries:
+    yesboss:
+      enabled: true
+      config:
+        # URL of the YesBoss API gateway (adjust if deployed remotely)
+        apiUrl: "http://localhost:3000/api"
+        # Service-to-service API key (must match YESBOSS_API_KEY in .env)
+        apiKey: "dev-api-key"
+
+# --- Agent Definition ---
+agents:
+  list:
+    - id: yesboss-agent
+      name: YesBoss
+      default: false
+      skills:
+        - yesboss-task-management
+        - yesboss-project-management
+        - yesboss-admin
+      identity:
+        name: YesBoss Assistant
+        description: >
+          You are the YesBoss workforce management assistant.
+          You help users manage tasks and projects through WhatsApp.
+          Always be concise since this is a messaging interface.
+          Use bullet points for lists. Keep responses under 200 words.
+          When in doubt about a user's identity, look them up first
+          using yesboss_lookup_user with their phone number.
+          Before any admin operation, verify the user has admin role.
+
+# --- Route WhatsApp to YesBoss Agent ---
+bindings:
+  - agentId: yesboss-agent
+    match:
+      channel: whatsapp
+
+# --- WhatsApp Access Control ---
+channels:
+  whatsapp:
+    accounts:
+      default:
+        # Only allow DMs from whitelisted numbers
+        dmPolicy: allowlist
+        allowFrom:
+          # ADD YOUR PHONE NUMBERS HERE (E.164 format with country code)
+          # - "+1234567890"   # Admin
+          # - "+0987654321"   # Team member
+        # Disable groups initially for security
+        groupPolicy: disabled

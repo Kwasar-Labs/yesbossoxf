@@ -7,13 +7,15 @@ import { param, query } from "../helpers.js";
 
 function toPublic(doc: any) {
   return {
-    id: doc._id.toHexString(),
+    _id: doc._id.toHexString(),
     title: doc.title,
     description: doc.description,
     projectId: doc.projectId?.toHexString(),
     status: doc.status,
     priority: doc.priority,
     assigneeId: doc.assigneeId?.toHexString(),
+    subtasks: doc.subtasks,
+    comments: doc.comments,
     dueDate: doc.dueDate,
     createdBy: doc.createdBy.toHexString(),
     tags: doc.tags,
@@ -76,8 +78,15 @@ export const getTask = asyncHandler(async (req: Request, res: Response) => {
 
 export const updateTask = asyncHandler(async (req: Request, res: Response) => {
   const body = req.body as {
-    title?: string; description?: string; projectId?: string | null;
-    priority?: Priority; dueDate?: string | null; tags?: string[];
+    title?: string;
+    description?: string;
+    projectId?: string | null;
+    priority?: Priority;
+    dueDate?: string | null;
+    tags?: string[];
+    assigneeId?: string | null;
+    subtasks?: any[];
+    comments?: any[];
   };
   const task = await TaskRepo.updateTask(param(req, "id"), body);
   if (!task) throw HttpError.notFound("Task");

@@ -16,3 +16,6 @@ export type { Organization, OrganizationCreateInput, OrganizationUpdateInput } f
 export type { Team, TeamCreateInput, TeamUpdateInput } from "./team.js";
 export type { LoginRequest, LoginResponse, JwtPayload } from "./auth.js";
 export type { PhoneUserMapping, PhoneMappingCreateInput } from "./whatsapp-user.js";
+
+export { FactCategory } from "./enums/fact-category.js";
+export type { KnowledgeFact, KnowledgeFactCreateInput, KnowledgeFactUpdateInput } from "./knowledge.js";

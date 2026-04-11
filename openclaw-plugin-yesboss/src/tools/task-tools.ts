@@ -13,12 +13,19 @@ const CreateTaskSchema = Type.Object({
   description: Type.Optional(Type.String({ description: "Task description" })),
   project_id: Type.Optional(Type.String({ description: "Project ID to assign task to" })),
   priority: Type.Optional(
-    Type.Unsafe<string>({ type: "string", enum: ["low", "medium", "high", "critical"] },
-    { description: "Priority: low, medium, high, critical" }),
+    Type.Union([
+      Type.Literal("low"), 
+      Type.Literal("medium"), 
+      Type.Literal("high"), 
+      Type.Literal("critical")
+    ], { description: "Priority: low, medium, high, critical" })
   ),
   assignee_id: Type.Optional(Type.String({ description: "User ID to assign the task to" })),
   due_date: Type.Optional(Type.String({ description: "Due date in YYYY-MM-DD format" })),
   tags: Type.Optional(Type.Array(Type.String(), { description: "Tags for the task" })),
+  reminders: Type.Optional(Type.Array(Type.String(), { description: "Reminder dates (ISO 8601 strings)" })),
+  recurrence_rule: Type.Optional(Type.String({ description: "RRULE string for recurring tasks" })),
+  follow_up_date: Type.Optional(Type.String({ description: "Follow-up date (ISO 8601 string)" })),
   organization_id: Type.String({ description: "Organization ID" }),
 }, { additionalProperties: false });
 
@@ -38,8 +45,9 @@ export function createCreateTaskTool(config?: { apiUrl?: string; apiKey?: string
       if (rawParams.priority) body.priority = rawParams.priority;
       if (rawParams.assignee_id) body.assigneeId = rawParams.assignee_id;
       if (rawParams.due_date) body.dueDate = rawParams.due_date;
-      if (rawParams.tags) body.tags = rawParams.tags;
-
+      if (rawParams.tags) body.tags = rawParams.tags;        if (rawParams.reminders) body.reminders = rawParams.reminders;
+        if (rawParams.recurrence_rule) body.recurrenceRule = rawParams.recurrence_rule;
+        if (rawParams.follow_up_date) body.followUpDate = rawParams.follow_up_date;
       const result = await callYesBossApi("POST", "/workforce/tasks", body, config);
       return { type: "json" as const, value: result };
     },
@@ -105,6 +113,9 @@ const UpdateTaskSchema = Type.Object({
   priority: Type.Optional(Type.String({ description: "New priority" })),
   due_date: Type.Optional(Type.String({ description: "New due date (YYYY-MM-DD)" })),
   tags: Type.Optional(Type.Array(Type.String(), { description: "New tags" })),
+  reminders: Type.Optional(Type.Array(Type.String(), { description: "New Reminder dates" })),
+  recurrence_rule: Type.Optional(Type.String({ description: "New RRULE string" })),
+  follow_up_date: Type.Optional(Type.String({ description: "New follow-up date" })),
 }, { additionalProperties: false });
 
 export function createUpdateTaskTool(config?: { apiUrl?: string; apiKey?: string }) {
@@ -120,8 +131,9 @@ export function createUpdateTaskTool(config?: { apiUrl?: string; apiKey?: string
       if (updates.description) body.description = updates.description;
       if (updates.priority) body.priority = updates.priority;
       if (updates.due_date) body.dueDate = updates.due_date;
-      if (updates.tags) body.tags = updates.tags;
-
+      if (updates.tags) body.tags = updates.tags;        if (updates.reminders) body.reminders = updates.reminders;
+        if (updates.recurrence_rule) body.recurrenceRule = updates.recurrence_rule;
+        if (updates.follow_up_date) body.followUpDate = updates.follow_up_date;
       const result = await callYesBossApi("PATCH", `/workforce/tasks/${task_id}`, body, config);
       return { type: "json" as const, value: result };
     },

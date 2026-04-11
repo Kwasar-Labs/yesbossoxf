@@ -6,7 +6,7 @@ import { param } from "../helpers.js";
 
 function toPublic(doc: any) {
   return {
-    id: doc._id.toHexString(),
+    _id: doc._id.toHexString(),
     name: doc.name,
     description: doc.description,
     isActive: doc.isActive,

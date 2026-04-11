@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.env
+*.pem
+*.key
+.claude
+.DS_Store
+yb-bruno-apis
+SYSTEM_ARCHITECTURE_BLUEPRINT.md
+openclaw-plugin-yesboss
+deploy
+Makefile

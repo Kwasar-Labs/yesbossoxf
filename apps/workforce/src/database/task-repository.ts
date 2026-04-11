@@ -16,6 +16,8 @@ interface TaskDocument {
   createdBy: ObjectId;
   tags: string[];
   organizationId: ObjectId;
+  subtasks?: any[];
+  comments?: any[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -94,14 +96,20 @@ export async function updateTask(id: string, input: {
   priority?: Priority;
   dueDate?: string | null;
   tags?: string[];
+  assigneeId?: string | null;
+  subtasks?: any[];
+  comments?: any[];
 }): Promise<TaskDocument | null> {
   const update: Record<string, unknown> = { updatedAt: new Date() };
   if (input.title !== undefined) update.title = input.title;
-  if (input.description !== undefined) update.description = input.description;
+  if (input.description !== undefined) update.description = input.description;  
   if (input.projectId !== undefined) update.projectId = input.projectId ? new ObjectId(input.projectId) : null;
   if (input.priority !== undefined) update.priority = input.priority;
   if (input.dueDate !== undefined) update.dueDate = input.dueDate ? new Date(input.dueDate) : null;
   if (input.tags !== undefined) update.tags = input.tags;
+  if (input.assigneeId !== undefined) update.assigneeId = input.assigneeId ? new ObjectId(input.assigneeId) : null;
+  if (input.subtasks !== undefined) update.subtasks = input.subtasks;
+  if (input.comments !== undefined) update.comments = input.comments;
 
   await getCollection().updateOne({ _id: new ObjectId(id) }, { $set: update });
   return findTaskById(id);

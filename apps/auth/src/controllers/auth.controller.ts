@@ -8,7 +8,7 @@ import { env } from "../config/env.js";
 function toPublicUser(doc: Awaited<ReturnType<typeof UserRepo.findById>>) {
   if (!doc) return null;
   return {
-    id: doc._id.toHexString(),
+    _id: doc._id.toHexString(),
     email: doc.email,
     name: doc.name,
     phoneE164: doc.phoneE164,

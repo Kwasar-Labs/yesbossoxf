@@ -17,10 +17,10 @@ app.use(compression());
 app.use(express.json());
 
 app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use("/organizations", orgRoutes);
-app.use("/teams", teamRoutes);
-app.use("/phone-mappings", phoneMappingRoutes);
+app.use("/auth/users", userRoutes);
+app.use("/auth/organizations", orgRoutes);
+app.use("/auth/teams", teamRoutes);
+app.use("/auth/phone-mappings", phoneMappingRoutes);
 
 app.use(httpErrorHandler);
 

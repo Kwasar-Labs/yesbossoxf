@@ -1,0 +1,11 @@
+meta {
+  name: Get Me
+  type: http
+}
+
+method GET
+url {{base_url}}/auth/me
+
+headers {
+  Authorization: Bearer {{token}}
+}

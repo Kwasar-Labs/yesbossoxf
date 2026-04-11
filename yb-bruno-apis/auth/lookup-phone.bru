@@ -1,0 +1,11 @@
+meta {
+  name: Lookup User by Phone
+  type: http
+}
+
+method GET
+url {{base_url}}/phone-mappings/+1234567890
+
+headers {
+  X-YesBoss-API-Key: {{api_key}}
+}

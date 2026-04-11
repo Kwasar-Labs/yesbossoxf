@@ -1,0 +1,11 @@
+meta {
+  name: List Projects
+  type: http
+}
+
+method GET
+url {{base_url}}/workforce/projects?organizationId=YOUR_ORG_ID
+
+headers {
+  Authorization: Bearer {{token}}
+}

@@ -1,0 +1,23 @@
+{
+  "name": "yesboss-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "YesBoss workforce management platform — backend monorepo",
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter ./apps/* run dev",
+    "dev:auth": "pnpm --filter @yesboss/auth run dev",
+    "dev:workforce": "pnpm --filter @yesboss/workforce run dev",
+    "dev:gateway": "pnpm --filter @yesboss/dev-gateway run dev",
+    "build": "pnpm run --filter @yesboss/types build && pnpm run --filter @yesboss/errors build && pnpm run --filter @yesboss/utils build && pnpm -r --filter ./apps/* run build",
+    "build:packages": "pnpm run --filter @yesboss/types build && pnpm run --filter @yesboss/errors build && pnpm run --filter @yesboss/utils build"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "tsup": "^8.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "yesboss",
+  "skills": ["./skills"],
+  "uiHints": {
+    "apiUrl": {
+      "label": "YesBoss API URL",
+      "help": "Base URL for the YesBoss backend API"
+    },
+    "apiKey": {
+      "label": "YesBoss API Key",
+      "help": "Service API key for authenticating with YesBoss",
+      "sensitive": true
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiUrl": {
+        "type": "string",
+        "description": "Base URL for the YesBoss API"
+      },
+      "apiKey": {
+        "type": "string",
+        "description": "API key for YesBoss service-to-service auth"
+      }
+    }
+  }
+}

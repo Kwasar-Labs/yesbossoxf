@@ -1,0 +1,18 @@
+meta {
+  name: Create Project
+  type: http
+}
+
+method POST
+url {{base_url}}/workforce/projects
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body {
+  "name": "Website Redesign",
+  "description": "Complete redesign of the company website",
+  "organizationId": "YOUR_ORG_ID"
+}

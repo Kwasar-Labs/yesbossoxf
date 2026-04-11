@@ -1,0 +1,16 @@
+meta {
+  name: Update Task Status
+  type: http
+}
+
+method PATCH
+url {{base_url}}/workforce/tasks/TASK_ID/status
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body {
+  "status": "in_progress"
+}

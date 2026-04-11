@@ -1,0 +1,18 @@
+meta {
+  name: Create Phone Mapping
+  type: http
+}
+
+method POST
+url {{base_url}}/phone-mappings
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body {
+  "phoneE164": "+1234567890",
+  "userId": "USER_ID",
+  "organizationId": "ORG_ID"
+}

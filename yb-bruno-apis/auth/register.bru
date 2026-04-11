@@ -1,0 +1,18 @@
+meta {
+  name: Register
+  type: http
+}
+
+method POST
+url {{base_url}}/auth/register
+
+headers {
+  Content-Type: application/json
+}
+
+body {
+  "email": "admin@yesboss.io",
+  "name": "Admin User",
+  "password": "securepassword123",
+  "role": "admin"
+}

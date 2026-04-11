@@ -1,0 +1,16 @@
+meta {
+  name: Login
+  type: http
+}
+
+method POST
+url {{base_url}}/auth/login
+
+headers {
+  Content-Type: application/json
+}
+
+body {
+  "email": "admin@yesboss.io",
+  "password": "securepassword123"
+}

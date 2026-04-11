@@ -1,0 +1,19 @@
+meta {
+  name: Create Task (API Key)
+  type: http
+}
+
+method POST
+url {{base_url}}/workforce/tasks
+
+headers {
+  Content-Type: application/json
+  X-YesBoss-API-Key: {{api_key}}
+}
+
+body {
+  "title": "Task via OpenClaw",
+  "priority": "medium",
+  "organizationId": "YOUR_ORG_ID",
+  "createdBy": "system"
+}

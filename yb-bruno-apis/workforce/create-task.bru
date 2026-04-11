@@ -1,0 +1,19 @@
+meta {
+  name: Create Task
+  type: http
+}
+
+method POST
+url {{base_url}}/workforce/tasks
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body {
+  "title": "Fix login bug",
+  "description": "Users can't log in on mobile",
+  "priority": "high",
+  "organizationId": "YOUR_ORG_ID"
+}

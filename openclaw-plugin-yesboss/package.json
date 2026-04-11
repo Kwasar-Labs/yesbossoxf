@@ -1,0 +1,20 @@
+{
+  "name": "@yesboss/openclaw-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "OpenClaw plugin for YesBoss workforce management via WhatsApp",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.0"
+  },
+  "devDependencies": {
+    "@openclaw/plugin-sdk": "latest",
+    "typescript": "^5.7.0"
+  },
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  }
+}

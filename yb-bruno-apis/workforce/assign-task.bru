@@ -1,0 +1,16 @@
+meta {
+  name: Assign Task
+  type: http
+}
+
+method POST
+url {{base_url}}/workforce/tasks/TASK_ID/assign
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body {
+  "assigneeId": "USER_ID"
+}

@@ -1,0 +1,11 @@
+meta {
+  name: List Tasks
+  type: http
+}
+
+method GET
+url {{base_url}}/workforce/tasks?organizationId=YOUR_ORG_ID&status=todo
+
+headers {
+  Authorization: Bearer {{token}}
+}

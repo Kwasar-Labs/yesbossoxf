@@ -1,0 +1,11 @@
+meta {
+  name: List Users
+  type: http
+}
+
+method GET
+url {{base_url}}/users?organizationId=YOUR_ORG_ID
+
+headers {
+  Authorization: Bearer {{token}}
+}

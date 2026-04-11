@@ -1,0 +1,11 @@
+meta {
+  name: Get Task
+  type: http
+}
+
+method GET
+url {{base_url}}/workforce/tasks/TASK_ID
+
+headers {
+  Authorization: Bearer {{token}}
+}

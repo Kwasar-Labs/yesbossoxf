@@ -1,0 +1,26 @@
+{
+  "name": "@yesboss/errors",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsx --watch src/index.ts"
+  },
+  "dependencies": {
+    "@yesboss/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}

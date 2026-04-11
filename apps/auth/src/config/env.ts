@@ -1,10 +1,22 @@
 import dotenv from "dotenv";
 import path from "path";
-dotenv.config();
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const monorepoRoot = path.resolve(__dirname, "../../../..");
+
+dotenv.config({ path: path.join(monorepoRoot, ".env") });
+
+function resolveKey(envVar: string | undefined, fallback: string): string {
+  const raw = envVar || fallback;
+  return path.isAbsolute(raw) ? raw : path.resolve(monorepoRoot, raw);
+}
 
 export const env = {
   PORT: parseInt(process.env.AUTH_PORT || "3001", 10),
-  MONGO_URI: process.env.MONGO_URI || "mongodb://localhost:27017/yesboss",      
-  JWT_PRIVATE_KEY_PATH: process.env.JWT_PRIVATE_KEY_PATH || path.resolve(process.cwd(), "../../keys/private.pem"),
-  JWT_PUBLIC_KEY_PATH: process.env.JWT_PUBLIC_KEY_PATH || path.resolve(process.cwd(), "../../keys/public.pem"),  
+  MONGO_URI: process.env.MONGO_URI || "mongodb://localhost:27017/yesboss",
+  JWT_PRIVATE_KEY_PATH: resolveKey(process.env.JWT_PRIVATE_KEY_PATH, "./keys/private.pem"),
+  JWT_PUBLIC_KEY_PATH: resolveKey(process.env.JWT_PUBLIC_KEY_PATH, "./keys/public.pem"),
+  YESBOSS_API_KEY: process.env.YESBOSS_API_KEY || "",
 };

@@ -17,7 +17,7 @@ function toPublic(doc: any) {
     subtasks: doc.subtasks,
     comments: doc.comments,
     dueDate: doc.dueDate,
-    createdBy: doc.createdBy.toHexString(),
+    createdBy: typeof doc.createdBy === "string" ? doc.createdBy : doc.createdBy.toHexString(),
     tags: doc.tags,
     organizationId: doc.organizationId.toHexString(),
     createdAt: doc.createdAt,

@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "node:url";
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const monorepoRoot = path.resolve(__dirname, "../../../..");
+
+dotenv.config({ path: path.join(monorepoRoot, ".env") });
 
 function resolveKey(envVar: string | undefined, fallback: string): string {
   const raw = envVar || fallback;

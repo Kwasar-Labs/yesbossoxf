@@ -46,7 +46,7 @@ export async function createTask(input: {
     priority: input.priority || Priority.MEDIUM,
     assigneeId: input.assigneeId ? new ObjectId(input.assigneeId) : undefined,
     dueDate: input.dueDate ? new Date(input.dueDate) : undefined,
-    createdBy: new ObjectId(input.createdBy),
+    createdBy: input.createdBy && input.createdBy !== "system" ? new ObjectId(input.createdBy) : (input.createdBy as any),
     tags: input.tags || [],
     organizationId: new ObjectId(input.organizationId),
     createdAt: now,

@@ -91,7 +91,29 @@
       "Bash(docker info:*)",
       "Bash(\"/c/Program Files/Docker/Docker/Docker Desktop.exe\")",
       "Bash(break)",
-      "Bash(grep -n \"throw new Error\\\\|not yet\\\\|coming soon\\\\|placeholder\" /c/Users/Ansh/Desktop/dev/yesbossoxf/apps/*/src/**/*.ts)"
+      "Bash(grep -n \"throw new Error\\\\|not yet\\\\|coming soon\\\\|placeholder\" /c/Users/Ansh/Desktop/dev/yesbossoxf/apps/*/src/**/*.ts)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"Started PID: $!\")",
+      "Bash(sort -t: -k2 -n)",
+      "Bash(grep -v \"^0.0.0.0:0$\")",
+      "Bash(grep -A5 \"gateway\\\\|port\\\\|http\" echo \"---\")",
+      "Bash(tasklist)",
+      "Bash(python3 -m json.tool)",
+      "Bash(grep -E \"18789|18790|18792|48080\" echo \"---\")",
+      "Bash(read pid:*)",
+      "Bash(tasklist /FI 'PID eq __TRACKED_VAR__')",
+      "Bash(tasklist /FI \"PID eq 30628\")",
+      "Bash(tasklist /FI \"PID eq 5108\")",
+      "Bash(openclaw gateway:*)",
+      "Bash(openclaw --help)",
+      "Bash(openclaw logs:*)",
+      "Bash(openclaw doctor:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create --title 'fix: resolve critical API routing, registration, and JWT auth issues' --body ':*)",
+      "Bash(netstat -ano)",
+      "Bash(echo \"\\(exit: $?\\)\")",
+      "Bash(head -5 ls -la /c/Users/Ansh/Desktop/dev/yesbossoxf/openclaw-plugin-yesboss/src/tools/*.ts)"
     ]
   }
 }

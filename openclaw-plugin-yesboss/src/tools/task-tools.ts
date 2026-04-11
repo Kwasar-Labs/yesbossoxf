@@ -45,9 +45,10 @@ export function createCreateTaskTool(config?: { apiUrl?: string; apiKey?: string
       if (rawParams.priority) body.priority = rawParams.priority;
       if (rawParams.assignee_id) body.assigneeId = rawParams.assignee_id;
       if (rawParams.due_date) body.dueDate = rawParams.due_date;
-      if (rawParams.tags) body.tags = rawParams.tags;        if (rawParams.reminders) body.reminders = rawParams.reminders;
-        if (rawParams.recurrence_rule) body.recurrenceRule = rawParams.recurrence_rule;
-        if (rawParams.follow_up_date) body.followUpDate = rawParams.follow_up_date;
+      if (rawParams.tags) body.tags = rawParams.tags;
+      if (rawParams.reminders) body.reminders = rawParams.reminders;
+      if (rawParams.recurrence_rule) body.recurrenceRule = rawParams.recurrence_rule;
+      if (rawParams.follow_up_date) body.followUpDate = rawParams.follow_up_date;
       const result = await callYesBossApi("POST", "/workforce/tasks", body, config);
       return { type: "json" as const, value: result };
     },
@@ -131,9 +132,10 @@ export function createUpdateTaskTool(config?: { apiUrl?: string; apiKey?: string
       if (updates.description) body.description = updates.description;
       if (updates.priority) body.priority = updates.priority;
       if (updates.due_date) body.dueDate = updates.due_date;
-      if (updates.tags) body.tags = updates.tags;        if (updates.reminders) body.reminders = updates.reminders;
-        if (updates.recurrence_rule) body.recurrenceRule = updates.recurrence_rule;
-        if (updates.follow_up_date) body.followUpDate = updates.follow_up_date;
+      if (updates.tags) body.tags = updates.tags;
+      if (updates.reminders) body.reminders = updates.reminders;
+      if (updates.recurrence_rule) body.recurrenceRule = updates.recurrence_rule;
+      if (updates.follow_up_date) body.followUpDate = updates.follow_up_date;
       const result = await callYesBossApi("PATCH", `/workforce/tasks/${task_id}`, body, config);
       return { type: "json" as const, value: result };
     },

@@ -55,7 +55,7 @@ export function createSearchKnowledgeTool(config?: { apiUrl?: string; apiKey?: s
       const searchParams = new URLSearchParams();
       // Wait, we can't easily pass it via body to GET request
       // callYesBossApi signature needs to be checked
-      const q = rawParams.q ? "?q=${encodeURIComponent(String(rawParams.q))}" : "";
+      const q = rawParams.q ? `?q=${encodeURIComponent(String(rawParams.q))}` : "";
       let url = "/workforce/knowledge/search" + q;
       
       if (rawParams.category) {

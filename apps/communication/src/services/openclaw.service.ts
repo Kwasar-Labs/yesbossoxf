@@ -43,6 +43,9 @@ export async function sendToOpenClaw(
   };
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90_000);
+
     const response = await fetch(
       `${env.OPENCLAW_GATEWAY_URL}/v1/chat/completions`,
       {
@@ -53,8 +56,10 @@ export async function sendToOpenClaw(
           "x-openclaw-agent-id": agentId,
         },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       }
     );
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const error = await response.text();

@@ -19,6 +19,8 @@ app.use(
     // The target here is just a default placeholder
     target: `http://localhost:${AUTH_PORT}`,
     changeOrigin: true,
+    proxyTimeout: 120000, // 2 minutes — AI responses can be slow
+    timeout: 120000,
     pathRewrite: function (path, req) {
       if (path.startsWith("/workforce")) return path.replace("/workforce", "");
       if (path.startsWith("/chat") || path.startsWith("/communication")) return "/api" + path;

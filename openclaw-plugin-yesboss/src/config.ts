@@ -2,7 +2,7 @@
  * Resolves YesBoss API configuration from plugin config or environment variables.
  */
 
-export const DEFAULT_YESBOSS_API_URL = "http://localhost:3000/api";
+export const DEFAULT_YESBOSS_API_URL = "http://127.0.0.1:3000/api";
 
 export function resolveApiUrl(pluginConfig?: { apiUrl?: string }): string {
   return pluginConfig?.apiUrl || process.env.YESBOSS_API_URL || DEFAULT_YESBOSS_API_URL;

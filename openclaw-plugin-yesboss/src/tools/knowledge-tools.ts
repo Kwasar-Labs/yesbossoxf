@@ -1,5 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { callYesBossApi } from "../yesboss-client.js";
+import { toolResult } from "../tool-result.js";
 
 // --- Learn Fact ---
 const LearnFactSchema = Type.Object({
@@ -32,7 +33,7 @@ export function createLearnFactTool(config?: { apiUrl?: string; apiKey?: string 
       if (rawParams.tags) body.tags = rawParams.tags;
 
       const result = await callYesBossApi("POST", "/workforce/knowledge", body, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -52,9 +53,6 @@ export function createSearchKnowledgeTool(config?: { apiUrl?: string; apiKey?: s
     description: "Query the Knowledge Base for SOPs, rules, skills, and past lessons. Use this before creating tasks or when uncertain about standard procedures.",
     parameters: SearchKnowledgeSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
-      const searchParams = new URLSearchParams();
-      // Wait, we can't easily pass it via body to GET request
-      // callYesBossApi signature needs to be checked
       const q = rawParams.q ? `?q=${encodeURIComponent(String(rawParams.q))}` : "";
       let url = "/workforce/knowledge/search" + q;
       
@@ -67,7 +65,7 @@ export function createSearchKnowledgeTool(config?: { apiUrl?: string; apiKey?: s
       url += (url.includes('?') ? "&" : "?") + "organizationId=" + encodeURIComponent(String(rawParams.organization_id));
 
       const result = await callYesBossApi("GET", url, undefined, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }

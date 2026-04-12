@@ -4,6 +4,7 @@
 
 import { Type } from "@sinclair/typebox";
 import { callYesBossApi } from "../yesboss-client.js";
+import { toolResult } from "../tool-result.js";
 
 // --- Assign Task ---
 const AssignTaskSchema = Type.Object({
@@ -27,7 +28,7 @@ export function createAssignTaskTool(config?: { apiUrl?: string; apiKey?: string
       };
 
       const result = await callYesBossApi("POST", `/workforce/tasks/${rawParams.task_id}/assign`, body, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -45,7 +46,7 @@ export function createUnassignTaskTool(config?: { apiUrl?: string; apiKey?: stri
     parameters: UnassignTaskSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
       const result = await callYesBossApi("POST", `/workforce/tasks/${rawParams.task_id}/unassign`, {}, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -70,7 +71,7 @@ export function createListMyTasksTool(config?: { apiUrl?: string; apiKey?: strin
       });
 
       const result = await callYesBossApi("GET", `/workforce/tasks?${params.toString()}`, undefined, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }

@@ -17,7 +17,7 @@ app.use(
   "/api",
   createProxyMiddleware({
     // The target here is just a default placeholder
-    target: `http://localhost:${AUTH_PORT}`,
+    target: `http://127.0.0.1:${AUTH_PORT}`,
     changeOrigin: true,
     proxyTimeout: 120000, // 2 minutes — AI responses can be slow
     timeout: 120000,
@@ -29,12 +29,12 @@ app.use(
     onProxyReq: (proxyReq, req, res) => { console.log('[Gateway] proxying ', req.method, req.originalUrl, 'to', proxyReq.path); },
     router: function (req) {
       if (req.url.startsWith("/workforce") || req.url.startsWith("/tasks") || req.url.startsWith("/projects") || req.url.startsWith("/assignments")) {
-        return `http://localhost:${WORKFORCE_PORT}`;
+        return `http://127.0.0.1:${WORKFORCE_PORT}`;
       }
       if (req.url.startsWith("/chat") || req.url.startsWith("/communication")) {
-        return `http://localhost:4000`;
+        return `http://127.0.0.1:4000`;
       }
-      return `http://localhost:${AUTH_PORT}`;
+      return `http://127.0.0.1:${AUTH_PORT}`;
     },
   })
 );

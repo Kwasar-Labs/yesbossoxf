@@ -7,12 +7,13 @@ export function httpErrorHandler(
   res: Response,
   _next: NextFunction,
 ): void {
-  if (err instanceof HttpError) {
-    res.status(err.statusCode).json({
+  if (err && err.name === "HttpError") {
+    const httpErr = err as any;
+    res.status(httpErr.statusCode || 500).json({
       error: {
-        code: err.code,
-        message: err.message,
-        ...(err.details ? { details: err.details } : {}),
+        code: httpErr.code || "INTERNAL_ERROR",
+        message: httpErr.message,
+        ...(httpErr.details ? { details: httpErr.details } : {}),
       },
     });
     return;

@@ -15,6 +15,7 @@ export async function callYesBossApi(
   const apiKey = resolveApiKey(pluginConfig);
 
   const url = `${baseUrl}${path}`;
+  console.log(`[yesboss-plugin] ${method} ${url}`);
   const response = await fetch(url, {
     method,
     headers: {
@@ -26,11 +27,14 @@ export async function callYesBossApi(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
+    console.error(`[yesboss-plugin] ERROR ${response.status}:`, JSON.stringify(error));
     throw new Error(`YesBoss API error: ${response.status} - ${(error as any).message || JSON.stringify(error)}`);
   }
 
   // Handle 204 No Content
   if (response.status === 204) return { success: true };
 
-  return response.json() as Promise<Record<string, unknown>>;
+  const json = await response.json() as Record<string, unknown>;
+  console.log(`[yesboss-plugin] Response:`, JSON.stringify(json).substring(0, 500));
+  return json;
 }

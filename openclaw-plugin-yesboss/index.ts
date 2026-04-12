@@ -41,10 +41,12 @@ export default definePluginEntry({
     "Manage tasks, projects, and teams through YesBoss via WhatsApp. Create tasks, update statuses, assign work, and query project progress.",
 
   register(api: any) {
-    const config = api.config?.plugins?.entries?.yesboss?.config as
+    // OpenClaw provides the per-plugin config directly via api.pluginConfig
+    const config = (api.pluginConfig || api.config?.plugins?.entries?.yesboss?.config) as
       | { apiUrl?: string; apiKey?: string }
       | undefined;
 
+    console.log("[yesboss-plugin] register() config:", JSON.stringify(config));
     // Task tools
     api.registerTool(createCreateTaskTool(config) as AnyAgentTool);
     api.registerTool(createListTasksTool(config) as AnyAgentTool);

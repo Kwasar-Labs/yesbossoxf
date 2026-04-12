@@ -4,6 +4,7 @@
 
 import { Type } from "@sinclair/typebox";
 import { callYesBossApi } from "../yesboss-client.js";
+import { toolResult } from "../tool-result.js";
 
 // --- Create Project ---
 const CreateProjectSchema = Type.Object({
@@ -28,7 +29,7 @@ export function createCreateProjectTool(config?: { apiUrl?: string; apiKey?: str
       if (rawParams.owner_ids) body.ownerIds = rawParams.owner_ids;
 
       const result = await callYesBossApi("POST", "/workforce/projects", body, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -51,7 +52,7 @@ export function createListProjectsTool(config?: { apiUrl?: string; apiKey?: stri
         undefined,
         config,
       );
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -69,7 +70,7 @@ export function createGetProjectTool(config?: { apiUrl?: string; apiKey?: string
     parameters: GetProjectSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
       const result = await callYesBossApi("GET", `/workforce/projects/${rawParams.project_id}`, undefined, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -96,7 +97,7 @@ export function createUpdateProjectTool(config?: { apiUrl?: string; apiKey?: str
       if (updates.status) body.status = updates.status;
 
       const result = await callYesBossApi("PATCH", `/workforce/projects/${project_id}`, body, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -115,17 +116,14 @@ export function createDeleteProjectTool(config?: { apiUrl?: string; apiKey?: str
     parameters: DeleteProjectSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
       if (!rawParams.confirmed) {
-        return {
-          type: "json" as const,
-          value: {
-            warning: "This is a destructive operation. Confirm with the user first by asking them to reply YES. Then call again with confirmed=true.",
-            project_id: rawParams.project_id,
-          },
-        };
+        return toolResult({
+          warning: "This is a destructive operation. Confirm with the user first by asking them to reply YES. Then call again with confirmed=true.",
+          project_id: rawParams.project_id,
+        });
       }
 
       const result = await callYesBossApi("DELETE", `/workforce/projects/${rawParams.project_id}`, undefined, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }

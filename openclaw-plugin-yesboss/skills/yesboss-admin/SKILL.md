@@ -8,9 +8,15 @@ metadata:
 
 # YesBoss Admin Operations
 
-These operations require admin privileges. If the user is not an admin, politely explain that the operation requires admin access and suggest they contact their team admin.
+These operations require admin privileges.
 
-## Admin-only operations
+## CRITICAL: Always resolve the user first
+
+Before ANY operation, call `yesboss_lookup_user` with the sender's phone number.
+Check the `role` field in the response. If the role is NOT "admin", respond:
+"This operation requires admin access. Please contact your team admin."
+
+## Admin-only tools
 
 | Operation | Tool |
 |-----------|------|
@@ -21,28 +27,14 @@ These operations require admin privileges. If the user is not an admin, politely
 | Unassign task | `yesboss_unassign_task` |
 | Update project | `yesboss_update_project` |
 
-## Confirmation requirements
+## Confirmation for destructive operations
 
-ALL destructive admin operations require explicit confirmation before executing:
-
-- **Delete**: "Are you sure you want to delete [name]? This cannot be undone. Reply YES to confirm."
-- **Reassign**: "Reassign [task title] to [new person]? Reply YES to confirm."
-
-**Protocol:**
-1. Present what will happen
-2. Ask for explicit "yes" / "confirm" / "YES" response
+ALL destructive operations require explicit confirmation:
+1. Tell the user what will happen
+2. Ask for "YES" to confirm
 3. Only then call the tool with `confirmed=true`
-4. If the user says anything else, cancel the operation
+4. If user says anything else, cancel
 
-## Permission checking
-
-1. Always resolve the sender with `yesboss_lookup_user` first
-2. Check the returned `role` field
-3. If `role` is not "admin", respond: "This operation requires admin access. Please contact your team admin."
-4. Do NOT proceed with the operation if the user is not an admin
-
-## Security notes
-
+## Security
 - Never reveal other users' personal information beyond name and role
-- Do not expose internal IDs unless necessary for the conversation
-- Log all admin operations mentally and include a brief audit note in your response
+- Do not expose internal IDs unless necessary

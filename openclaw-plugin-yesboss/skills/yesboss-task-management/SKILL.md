@@ -10,56 +10,58 @@ metadata:
 
 Manage tasks directly from WhatsApp conversations.
 
+## CRITICAL: Step-by-step workflow
+
+**ALWAYS follow this exact sequence. Do NOT skip steps. Do NOT try to run code.**
+
+### Step 1: Resolve the user FIRST
+Call `yesboss_lookup_user` with the sender's phone number. The response gives you:
+- `user_id` — the user's ID
+- `organization_id` — REQUIRED for all task operations
+- `name`, `email`, `role`
+
+### Step 2: Perform the requested operation
+Use the values from Step 1 directly. Do NOT try to parse or transform them.
+
 ## Available tools
 
-| Need | Tool |
-|------|------|
-| Create a task | `yesboss_create_task` |
-| List/view tasks | `yesboss_list_tasks` |
-| Get task details | `yesboss_get_task` |
-| Edit a task | `yesboss_update_task` |
-| Change task status | `yesboss_update_task_status` |
-| Delete a task | `yesboss_delete_task` |
-| Assign a task | `yesboss_assign_task` |
-| Remove assignment | `yesboss_unassign_task` |
-| See my tasks | `yesboss_list_my_tasks` |
+| Need | Tool | Required params |
+|------|------|-----------------|
+| Create a task | `yesboss_create_task` | `title`, `organization_id` |
+| List/view tasks | `yesboss_list_tasks` | `organization_id` |
+| Get task details | `yesboss_get_task` | `task_id` |
+| Edit a task | `yesboss_update_task` | `task_id` |
+| Change task status | `yesboss_update_task_status` | `task_id`, `status` |
+| Delete a task | `yesboss_delete_task` | `task_id` |
+| Assign a task | `yesboss_assign_task` | `task_id`, `assignee_id` |
+| Remove assignment | `yesboss_unassign_task` | `task_id` |
+| See my tasks | `yesboss_list_my_tasks` | `organization_id`, `user_id` |
 
-## Resolving the user
+## Creating a task — example
 
-Before performing any operation, use `yesboss_lookup_user` with the sender's phone number to get their user ID, role, and organization ID. You need the `organization_id` for most operations.
+When the user says "create task deploy with high priority":
+1. Call `yesboss_lookup_user` with `phone_e164` = sender's phone
+2. From the result, take `organization_id`
+3. Call `yesboss_create_task` with:
+   - `title`: "deploy"
+   - `organization_id`: value from step 2
+   - `priority`: "high"
+4. Confirm creation with: "✅ Task created: **deploy** (high priority)"
 
-## Workflow patterns
+## Priority mapping
+- "urgent" / "critical" → `critical`
+- "important" / "high" → `high`
+- "normal" / default → `medium`
+- "low" → `low`
 
-### Creating a task
-When the user says something like "create task: fix the login bug" or "add a task for John":
-1. Use `yesboss_lookup_user` to resolve the sender
-2. Call `yesboss_create_task` with:
-   - `title` (required) — extract from the message
-   - `organization_id` — from the user lookup
-   - `priority` — if user mentions urgency ("urgent" → critical, "important" → high, default → medium)
-   - `assignee_id` — if user mentions a person name, look them up first
-   - `due_date` — if user mentions a deadline
-3. Confirm creation back to user with task ID and summary
-
-### Updating task status
-When the user says "mark task X as done" or "task 5 is complete" or "move task to review":
-1. Resolve the task ID first (use `yesboss_list_tasks` or `yesboss_get_task` if needed)
-2. Call `yesboss_update_task_status` with the task ID and new status
-3. Valid statuses: `todo`, `in_progress`, `in_review`, `done`, `cancelled`
-4. Confirm the status change
-
-### Querying tasks
-When the user asks "what are my tasks?" or "show open tasks" or "what's pending?":
-1. Use `yesboss_list_my_tasks` for personal tasks
-2. Use `yesboss_list_tasks` with filters for broader queries
-3. Format results as a clear numbered list with task title, status, and assignee
+## Status values
+Valid: `todo`, `in_progress`, `in_review`, `done`, `cancelled`
 
 ## Response format
-
 Keep responses concise for WhatsApp:
 - Use bullet points for lists
 - Keep messages under 200 words
-- Lead with the most important info (status, count, action taken)
+- Lead with the action taken
 - Include task IDs for reference
 
 ## Natural language mapping

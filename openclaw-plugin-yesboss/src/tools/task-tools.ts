@@ -6,6 +6,7 @@
 
 import { Type } from "@sinclair/typebox";
 import { callYesBossApi } from "../yesboss-client.js";
+import { toolResult } from "../tool-result.js";
 
 // --- Create Task ---
 const CreateTaskSchema = Type.Object({
@@ -50,7 +51,7 @@ export function createCreateTaskTool(config?: { apiUrl?: string; apiKey?: string
       if (rawParams.recurrence_rule) body.recurrenceRule = rawParams.recurrence_rule;
       if (rawParams.follow_up_date) body.followUpDate = rawParams.follow_up_date;
       const result = await callYesBossApi("POST", "/workforce/tasks", body, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -83,7 +84,7 @@ export function createListTasksTool(config?: { apiUrl?: string; apiKey?: string 
       if (rawParams.limit) params.set("limit", String(rawParams.limit));
 
       const result = await callYesBossApi("GET", `/workforce/tasks?${params.toString()}`, undefined, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -101,7 +102,7 @@ export function createGetTaskTool(config?: { apiUrl?: string; apiKey?: string })
     parameters: GetTaskSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
       const result = await callYesBossApi("GET", `/workforce/tasks/${rawParams.task_id}`, undefined, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -137,7 +138,7 @@ export function createUpdateTaskTool(config?: { apiUrl?: string; apiKey?: string
       if (updates.recurrence_rule) body.recurrenceRule = updates.recurrence_rule;
       if (updates.follow_up_date) body.followUpDate = updates.follow_up_date;
       const result = await callYesBossApi("PATCH", `/workforce/tasks/${task_id}`, body, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -161,7 +162,7 @@ export function createUpdateTaskStatusTool(config?: { apiUrl?: string; apiKey?: 
         { status: rawParams.status },
         config,
       );
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }
@@ -180,17 +181,14 @@ export function createDeleteTaskTool(config?: { apiUrl?: string; apiKey?: string
     parameters: DeleteTaskSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
       if (!rawParams.confirmed) {
-        return {
-          type: "json" as const,
-          value: {
-            warning: "This is a destructive operation. Confirm with the user first by asking them to reply YES. Then call again with confirmed=true.",
-            task_id: rawParams.task_id,
-          },
-        };
+        return toolResult({
+          warning: "This is a destructive operation. Confirm with the user first by asking them to reply YES. Then call again with confirmed=true.",
+          task_id: rawParams.task_id,
+        });
       }
 
       const result = await callYesBossApi("DELETE", `/workforce/tasks/${rawParams.task_id}`, undefined, config);
-      return { type: "json" as const, value: result };
+      return toolResult(result);
     },
   };
 }

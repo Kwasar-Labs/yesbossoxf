@@ -30,10 +30,16 @@ export const getInsights = asyncHandler(async (req: AuthenticatedRequest, res: R
     content: "You are an elite AI Operations Manager. Read the following JSON operations data for the organization and provide a concise, sharp 3-bullet executive summary of what is happening, what is falling behind, or what needs attention right now. Format your response strictly as a Markdown list. Do not use conversational filler, just the insights.\n\nDATA:\n" + operationsContext
   };
 
-  const response = await sendToOpenClaw([systemPrompt], "yesboss-agent");
-  
+  let response: string;
+  try {
+    response = await sendToOpenClaw([systemPrompt], "yesboss-agent");
+  } catch {
+    log.warn("OpenClaw unavailable — returning empty insights");
+    return ok(res, { insights: [] });
+  }
+
   const content = response || "No insights generated.";
-  
+
   const lines = content.split('\n')
     .map(line => line.trim())
     .filter(line => line.startsWith('-') || line.startsWith('*'))

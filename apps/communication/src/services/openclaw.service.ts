@@ -76,7 +76,8 @@ export async function sendToOpenClaw(
 
     return assistantMessage;
   } catch (error) {
-    log.error("Failed to call OpenClaw:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    log.error("Failed to call OpenClaw:", msg);
     throw error;
   }
 }

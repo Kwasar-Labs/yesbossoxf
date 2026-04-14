@@ -1,12 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { KanbanBoard } from "@/components/kanban/kanban-board";
-import { TaskList } from "@/components/tasks/task-list";
+import dynamic from "next/dynamic";
 import { useTaskStore } from "@/stores/task-store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutList, LayoutGrid, Filter, Search } from "lucide-react";
+import { LayoutList, LayoutGrid, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const KanbanBoard = dynamic(
+  () => import("@/components/kanban/kanban-board").then((m) => m.KanbanBoard),
+  { ssr: false, loading: () => <div className="flex h-64 items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div> }
+);
+
+const TaskList = dynamic(
+  () => import("@/components/tasks/task-list").then((m) => m.TaskList),
+  { ssr: false, loading: () => <div className="flex h-32 items-center justify-center"><div className="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div> }
+);
 
 export default function TasksPage() {
   const { fetchTasks } = useTaskStore();
@@ -51,7 +60,7 @@ export default function TasksPage() {
 
       <div className="flex-1 overflow-x-auto pb-8">
         <Tabs value={activeTab} className="h-full">
-          <TabsContent value="list" className="border-0 p-0 m-0 h-full overflow-y-auto">     
+          <TabsContent value="list" className="border-0 p-0 m-0 h-full overflow-y-auto">
             <TaskList />
           </TabsContent>
           <TabsContent value="board" className="border-0 p-0 m-0 h-full overflow-y-auto">

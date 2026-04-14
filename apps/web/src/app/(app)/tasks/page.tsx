@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import { useEffect, useState } from "react";
 import { KanbanBoard } from "@/components/kanban/kanban-board";
 import { TaskList } from "@/components/tasks/task-list";
@@ -14,15 +12,8 @@ export default function TasksPage() {
   const { fetchTasks } = useTaskStore();
   const [activeTab, setActiveTab] = useState("board");
 
-  // Initial load and polling
   useEffect(() => {
     fetchTasks({ limit: 100 }, false);
-
-    const interval = setInterval(() => {
-      fetchTasks({ limit: 100 }, true);
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, [fetchTasks]);
 
   return (

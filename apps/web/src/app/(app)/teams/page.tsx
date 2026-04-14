@@ -17,14 +17,6 @@ export default function TeamsPage() {
   useEffect(() => {
     fetchTeams();
     fetchUsers();
-
-    // Auto-refresh silently
-    const interval = setInterval(() => {
-      fetchTeams(true);
-      fetchUsers(true);
-    }, 10000);
-
-    return () => clearInterval(interval);
   }, [fetchTeams, fetchUsers]);
 
   return (

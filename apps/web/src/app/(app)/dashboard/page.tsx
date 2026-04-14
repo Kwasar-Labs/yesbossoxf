@@ -20,12 +20,6 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchTasks({ limit: 100 }, false);
     fetchProjects();
-
-    const interval = setInterval(() => {
-      fetchTasks({ limit: 100 }, true);
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, [fetchTasks, fetchProjects]);
 
   const inProgressCount = tasks.filter((t) => t.status === TaskStatus.IN_PROGRESS).length;
@@ -36,25 +30,33 @@ export default function DashboardPage() {
   const [insightsLoading, setInsightsLoading] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     async function loadInsights() {
       setInsightsLoading(true);
       try {
         const token = localStorage.getItem("yesboss_token");
         if (!token) return;
         const res = await fetch("http://localhost:3000/api/chat/insights", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
+          signal: controller.signal,
         });
         const data = await res.json();
         if (data && data.data && data.data.insights) {
           setInsights(data.data.insights);
         }
       } catch (e) {
-        console.error("Failed to load insights", e);
+        if ((e as Error).name !== "AbortError") {
+          console.error("Failed to load insights", e);
+        }
       } finally {
+        clearTimeout(timeoutId);
         setInsightsLoading(false);
       }
     }
     loadInsights();
+    return () => controller.abort();
   }, []);
   
   const velocity = totalTasks > 0 ? ((doneCount / totalTasks) * 100).toFixed(1) : "0.0";

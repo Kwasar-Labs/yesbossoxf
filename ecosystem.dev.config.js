@@ -19,6 +19,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "300M",
+      min_uptime: 3000,
+      max_restarts: 10,
+      restart_delay: 3000,
     },
     {
       name: "yesboss-workforce",
@@ -32,6 +35,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "300M",
+      min_uptime: 3000,
+      max_restarts: 10,
+      restart_delay: 3000,
     },
     {
       name: "yesboss-communication",
@@ -45,6 +51,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "300M",
+      min_uptime: 3000,
+      max_restarts: 10,
+      restart_delay: 3000,
     },
     {
       name: "yesboss-gateway",
@@ -59,6 +68,23 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "150M",
+      min_uptime: 3000,
+      max_restarts: 10,
+      restart_delay: 3000,
+    },
+    {
+      name: "yesboss-web",
+      script: "./node_modules/.bin/pnpm.cmd",
+      args: "--filter @yesboss/web dev",
+      env: {
+        NODE_ENV: "development",
+      },
+      autorestart: true,
+      watch: false,
+      max_memory_restart: "512M",
+      min_uptime: 5000,
+      max_restarts: 5,
+      restart_delay: 3000,
     },
     {
       // OpenClaw gateway — WhatsApp + agent routing
@@ -68,6 +94,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "256M",
+      min_uptime: 5000,
+      max_restarts: 5,
+      restart_delay: 5000,
     },
   ],
 };

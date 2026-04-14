@@ -16,7 +16,7 @@
     "stop": "pm2 delete all",
     "logs": "pm2 logs",
     "status": "pm2 status",
-    "build": "pnpm run --filter @yesboss/types build && pnpm run --filter @yesboss/errors build && pnpm run --filter @yesboss/utils build && pnpm -r --filter ./apps/* run build",
+    "build": "pnpm run --filter @yesboss/types build && pnpm run --filter @yesboss/errors build && pnpm run --filter @yesboss/utils build && pnpm run --filter @yesboss/auth build && pnpm run --filter @yesboss/workforce build && pnpm run --filter @yesboss/communication build && pnpm run --filter @yesboss/dev-gateway build",
     "build:packages": "pnpm run --filter @yesboss/types build && pnpm run --filter @yesboss/errors build && pnpm run --filter @yesboss/utils build"
   },
   "devDependencies": {

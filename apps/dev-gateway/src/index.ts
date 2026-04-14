@@ -27,27 +27,27 @@ app.use(
     },
     router: function (req) {
       if (
-        req.url.startsWith("/workforce") ||
-        req.url.startsWith("/tasks") ||
-        req.url.startsWith("/projects") ||
-        req.url.startsWith("/assignments")
+        (req.url || "").startsWith("/workforce") ||
+        (req.url || "").startsWith("/tasks") ||
+        (req.url || "").startsWith("/projects") ||
+        (req.url || "").startsWith("/assignments")
       ) {
         return `http://127.0.0.1:${WORKFORCE_PORT}`;
       }
-      if (req.url.startsWith("/chat") || req.url.startsWith("/communication")) {
+      if ((req.url || "").startsWith("/chat") || (req.url || "").startsWith("/communication")) {
         return `http://127.0.0.1:4000`;
       }
       return `http://127.0.0.1:${AUTH_PORT}`;
     },
     on: {
       proxyReq: (proxyReq, req) => {
-        console.log(`[Gateway] ${req.method} ${req.originalUrl} → ${proxyReq.host}${proxyReq.path}`);
+        console.log(`[Gateway] ${req.method} ${(req as any).originalUrl} → ${proxyReq.host}${proxyReq.path}`);
       },
       error: (err, req, res) => {
         const code = (err as NodeJS.ErrnoException).code;
         console.error(`[Gateway] proxy error ${code}: ${req.method} ${(req as express.Request).originalUrl}`);
-        if (!res.headersSent) {
-          (res as express.Response).status(503).json({
+        if (!(res as any).headersSent) {
+          (res as any).status(503).json({
             error: {
               code: code ?? "SERVICE_UNAVAILABLE",
               message: "Service temporarily unavailable — backend may still be starting",

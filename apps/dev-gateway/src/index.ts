@@ -16,25 +16,45 @@ app.use(cors());
 app.use(
   "/api",
   createProxyMiddleware({
-    // The target here is just a default placeholder
     target: `http://127.0.0.1:${AUTH_PORT}`,
     changeOrigin: true,
-    proxyTimeout: 120000, // 2 minutes — AI responses can be slow
-    timeout: 120000,
-    pathRewrite: function (path, req) {
+    proxyTimeout: 15000,
+    timeout: 15000,
+    pathRewrite: function (path, _req) {
       if (path.startsWith("/workforce")) return path.replace("/workforce", "");
       if (path.startsWith("/chat") || path.startsWith("/communication")) return "/api" + path;
       return path;
     },
-    onProxyReq: (proxyReq, req, res) => { console.log('[Gateway] proxying ', req.method, req.originalUrl, 'to', proxyReq.path); },
     router: function (req) {
-      if (req.url.startsWith("/workforce") || req.url.startsWith("/tasks") || req.url.startsWith("/projects") || req.url.startsWith("/assignments")) {
+      if (
+        req.url.startsWith("/workforce") ||
+        req.url.startsWith("/tasks") ||
+        req.url.startsWith("/projects") ||
+        req.url.startsWith("/assignments")
+      ) {
         return `http://127.0.0.1:${WORKFORCE_PORT}`;
       }
       if (req.url.startsWith("/chat") || req.url.startsWith("/communication")) {
         return `http://127.0.0.1:4000`;
       }
       return `http://127.0.0.1:${AUTH_PORT}`;
+    },
+    on: {
+      proxyReq: (proxyReq, req) => {
+        console.log(`[Gateway] ${req.method} ${req.originalUrl} → ${proxyReq.host}${proxyReq.path}`);
+      },
+      error: (err, req, res) => {
+        const code = (err as NodeJS.ErrnoException).code;
+        console.error(`[Gateway] proxy error ${code}: ${req.method} ${(req as express.Request).originalUrl}`);
+        if (!res.headersSent) {
+          (res as express.Response).status(503).json({
+            error: {
+              code: code ?? "SERVICE_UNAVAILABLE",
+              message: "Service temporarily unavailable — backend may still be starting",
+            },
+          });
+        }
+      },
     },
   })
 );

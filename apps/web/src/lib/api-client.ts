@@ -22,6 +22,7 @@ async function request<T>(
   method: string,
   path: string,
   options?: { body?: unknown; params?: Record<string, string> },
+  retries = 3,
 ): Promise<T> {
   const fullPath = `${BASE_URL}${path}`;
   const url = new URL(fullPath, typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
@@ -43,6 +44,12 @@ async function request<T>(
     headers,
     body: options?.body ? JSON.stringify(options.body) : undefined,
   });
+
+  // Retry on 503 — backend may still be starting up
+  if (res.status === 503 && retries > 0) {
+    await new Promise((r) => setTimeout(r, 2000));
+    return request<T>(method, path, options, retries - 1);
+  }
 
   if (!res.ok) {
     const err = (await res.json()) as ApiErrorResponse;

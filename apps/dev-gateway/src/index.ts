@@ -18,8 +18,8 @@ app.use(
   createProxyMiddleware({
     target: `http://127.0.0.1:${AUTH_PORT}`,
     changeOrigin: true,
-    proxyTimeout: 15000,
-    timeout: 15000,
+    proxyTimeout: 120000,
+    timeout: 120000,
     pathRewrite: function (path, _req) {
       if (path.startsWith("/workforce")) return path.replace("/workforce", "");
       if (path.startsWith("/chat") || path.startsWith("/communication")) return "/api" + path;

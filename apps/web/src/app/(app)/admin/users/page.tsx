@@ -108,7 +108,7 @@ export default function UsersPage() {
                       <Select
                         value={user.role}
                         onValueChange={(v) => { if (v) updateRole(user._id, v as UserRole); }}
-                        disabled={user._id === currentUser?.id}
+                      disabled={user._id === currentUser?._id}
                       >
                         <SelectTrigger className="w-28">
                           <SelectValue />
@@ -125,7 +125,7 @@ export default function UsersPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {user._id !== currentUser?.id && (
+                      {user._id !== currentUser?._id && (
                         <Button
                           variant={user.isActive ? "destructive" : "default"}
                           size="sm"

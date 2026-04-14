@@ -4,10 +4,10 @@
   "private": true,
   "description": "YesBoss workforce management platform — backend monorepo",
   "scripts": {
-    "dev": "pm2 start ecosystem.dev.config.js && pm2 logs",
-    "dev:stop": "pm2 delete all",
-    "dev:logs": "pm2 logs",
-    "dev:status": "pm2 status",
+    "dev": "concurrently \"pnpm run dev:auth\" \"pnpm run dev:workforce\" \"pnpm run dev:communication\" \"pnpm run dev:gateway\"",
+    "dev:stop": "echo 'No longer using pm2'",
+    "dev:logs": "echo 'Logs are now aggregated in the single terminal'",
+    "dev:status": "echo 'Running concurrently'",
     "dev:auth": "pnpm --filter @yesboss/auth run dev",
     "dev:workforce": "pnpm --filter @yesboss/workforce run dev",
     "dev:communication": "pnpm --filter @yesboss/communication run dev",
@@ -20,9 +20,10 @@
     "build:packages": "pnpm run --filter @yesboss/types build && pnpm run --filter @yesboss/errors build && pnpm run --filter @yesboss/utils build"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
+    "tsup": "^8.3.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0",
-    "tsup": "^8.3.0"
+    "typescript": "^5.7.0"
   },
   "engines": {
     "node": ">=20.0.0",

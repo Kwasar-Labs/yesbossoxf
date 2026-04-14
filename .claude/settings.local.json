@@ -113,7 +113,10 @@
       "Bash(gh pr create --title 'fix: resolve critical API routing, registration, and JWT auth issues' --body ':*)",
       "Bash(netstat -ano)",
       "Bash(echo \"\\(exit: $?\\)\")",
-      "Bash(head -5 ls -la /c/Users/Ansh/Desktop/dev/yesbossoxf/openclaw-plugin-yesboss/src/tools/*.ts)"
+      "Bash(head -5 ls -la /c/Users/Ansh/Desktop/dev/yesbossoxf/openclaw-plugin-yesboss/src/tools/*.ts)",
+      "Bash(python -c \"import graphify\")",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(python:*)"
     ]
   }
 }

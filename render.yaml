@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: yesboss-backend
+    env: node
+    buildCommand: pnpm install && pnpm run build
+    startCommand: npm install -g pm2 && pm2-runtime start ecosystem.config.js
+    envVars:
+      - key: MONGO_URI
+        sync: false # Requires manually setting the MongoDB URL (e.g. Atlas) in Render Dashboard
+      - key: GATEWAY_PORT
+        value: 10000
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: YESBOSS_API_KEY
+        generateValue: true
+      # You can add other critical secrets here natively
+      - key: OPENCLAW_GATEWAY_TOKEN
+        sync: false

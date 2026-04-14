@@ -1,0 +1,1 @@
+{"nodes": [], "edges": [{"source": "apps-web-AGENTS_nextjs_agent_rules", "target": "apps-web-README_nextjs_project", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "apps/web/CLAUDE.md", "source_location": null, "weight": 1.0}], "hyperedges": []}

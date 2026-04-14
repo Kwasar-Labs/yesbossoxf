@@ -1,0 +1,1123 @@
+{
+  "nodes": [
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_monorepo_architecture",
+      "label": "YesBoss TypeScript Monorepo Architecture",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 1-2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_core_stack",
+      "label": "Core Stack (pnpm, TypeScript, Express, MongoDB, RabbitMQ, PM2)",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_packages_domain",
+      "label": "Shared Packages Domain (@yesboss/types, @yesboss/errors, @yesboss/utils)",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_types_package",
+      "label": "@yesboss/types Package",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_errors_package",
+      "label": "@yesboss/errors Package",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_utils_package",
+      "label": "@yesboss/utils Package",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3",
+      "source_url": null,
+      "captured_at": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "label": "Microservices Apps Domain",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "label": "Auth Microservice (Identity, RBAC, Orgs)",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_communication_service",
+      "label": "Communication Microservice (WhatsApp, RabbitMQ)",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+      "label": "Workforce Microservice (Projects, Tasks)",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_dev_gateway_service",
+      "label": "Dev-Gateway (Local Reverse Proxy)",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_controller_service_route_pattern",
+      "label": "Controller-Service-Route Pattern",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_no_circular_deps_rule",
+      "label": "No Circular Dependencies Rule",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_bruno_api_collections",
+      "label": "Bruno API Collections",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_pm2_ecosystem",
+      "label": "PM2 Ecosystem Deployment",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_event_driven_communication",
+      "label": "Event-Driven Communication (RabbitMQ)",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 1,4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_rationale_tsup_shared_packages",
+      "label": "Rationale: tsup for shared packages ensures dual CJS/ESM output with DTS",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 2-3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_rationale_native_mongodb_driver",
+      "label": "Rationale: Native MongoDB driver decoupled per service for independence",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "SYSTEM_ARCHITECTURE_BLUEPRINT_rationale_bruno_over_postman",
+      "label": "Rationale: Bruno chosen over Postman for API testing collections",
+      "file_type": "document",
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_dashboard_page",
+      "label": "Architect Pro Dashboard Page (Next.js Client Component)",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_task_store",
+      "label": "useTaskStore (Zustand Task Store)",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_project_store",
+      "label": "useProjectStore (Zustand Project Store)",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_task_summary_chart",
+      "label": "TaskSummaryChart Component",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_activity_feed",
+      "label": "ActivityFeed Component",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_task_status_enum",
+      "label": "TaskStatus Enum",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_velocity_metric",
+      "label": "Velocity Metric (Task Completion Percentage)",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_efficiency_metric",
+      "label": "Team Efficiency Metric",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "temp-dashboard_upcoming_deadlines",
+      "label": "Upcoming Deadlines (48h Window)",
+      "file_type": "code",
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 37-41",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "apps-web-AGENTS_nextjs_agent_rules",
+      "label": "Next.js Agent Rules (Breaking Changes Warning)",
+      "file_type": "document",
+      "source_file": "apps/web/AGENTS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "apps-web-README_nextjs_project",
+      "label": "Next.js Web App (apps/web)",
+      "file_type": "document",
+      "source_file": "apps/web/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-admin-skill_admin_operations",
+      "label": "YesBoss Admin Operations Skill",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-admin-skill_lookup_user_tool",
+      "label": "yesboss_lookup_user Tool",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-admin-skill_rbac_check",
+      "label": "Admin RBAC Check Pattern",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-admin-skill_destructive_op_confirmation",
+      "label": "Destructive Operation Confirmation Pattern",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-project-management-skill_project_operations",
+      "label": "YesBoss Project Management Skill",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-project-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-project-management-skill_create_project_tool",
+      "label": "yesboss_create_project Tool",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-project-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-project-management-skill_list_projects_tool",
+      "label": "yesboss_list_projects Tool",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-project-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-task-management-skill_task_operations",
+      "label": "YesBoss Task Management Skill",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-task-management-skill_create_task_tool",
+      "label": "yesboss_create_task Tool",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-task-management-skill_priority_mapping",
+      "label": "Task Priority Mapping (urgent/high/medium/low)",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-task-management-skill_status_values",
+      "label": "Task Status Values (todo, in_progress, in_review, done, cancelled)",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "yesboss-task-management-skill_whatsapp_response_format",
+      "label": "WhatsApp-Friendly Response Format",
+      "file_type": "document",
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "qa-scenarios_index",
+      "label": "QA Scenarios Index",
+      "file_type": "document",
+      "source_file": "qa/scenarios/index.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_monorepo_architecture",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_core_stack",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 1",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_monorepo_architecture",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_packages_domain",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 2-3",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_monorepo_architecture",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 2,4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_monorepo_architecture",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_no_circular_deps_rule",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 2",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_packages_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_types_package",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_packages_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_errors_package",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_packages_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_utils_package",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_communication_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_dev_gateway_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_controller_service_route_pattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_communication_service",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_event_driven_communication",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_event_driven_communication",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 0.8
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_event_driven_communication",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 0.7
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_rationale_tsup_shared_packages",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_packages_domain",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 2-3",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_rationale_native_mongodb_driver",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_core_stack",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 1",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_rationale_bruno_over_postman",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_bruno_api_collections",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 5",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_types_package",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3-4",
+      "weight": 0.85
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_types_package",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3-4",
+      "weight": 0.85
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_errors_package",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_controller_service_route_pattern",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3-4",
+      "weight": 0.8
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_utils_package",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3-4",
+      "weight": 0.85
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_dev_gateway_service",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_dev_gateway_service",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 4",
+      "weight": 1.0
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_pm2_ecosystem",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_apps_domain",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 5",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_task_store",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 3",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_project_store",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 4",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_task_summary_chart",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 7",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_activity_feed",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 8",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_task_status_enum",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 6",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_velocity_metric",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 35",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_efficiency_metric",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 36",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "temp-dashboard_upcoming_deadlines",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 37-41",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_velocity_metric",
+      "target": "temp-dashboard_task_status_enum",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 32-35",
+      "weight": 1.0
+    },
+    {
+      "source": "temp-dashboard_efficiency_metric",
+      "target": "temp-dashboard_task_status_enum",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "temp-dashboard.txt",
+      "source_location": "line 36",
+      "weight": 1.0
+    },
+    {
+      "source": "apps-web-AGENTS_nextjs_agent_rules",
+      "target": "apps-web-README_nextjs_project",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "apps/web/CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-admin-skill_admin_operations",
+      "target": "yesboss-admin-skill_lookup_user_tool",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-admin-skill_admin_operations",
+      "target": "yesboss-admin-skill_rbac_check",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-admin-skill_admin_operations",
+      "target": "yesboss-admin-skill_destructive_op_confirmation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-project-management-skill_project_operations",
+      "target": "yesboss-project-management-skill_create_project_tool",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-project-management/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-project-management-skill_project_operations",
+      "target": "yesboss-project-management-skill_list_projects_tool",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-project-management/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-task-management-skill_task_operations",
+      "target": "yesboss-task-management-skill_create_task_tool",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-task-management-skill_task_operations",
+      "target": "yesboss-task-management-skill_priority_mapping",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-task-management-skill_task_operations",
+      "target": "yesboss-task-management-skill_status_values",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-task-management-skill_task_operations",
+      "target": "yesboss-task-management-skill_whatsapp_response_format",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-admin-skill_lookup_user_tool",
+      "target": "yesboss-task-management-skill_task_operations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-task-management/SKILL.md",
+      "source_location": "Step 1",
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-admin-skill_lookup_user_tool",
+      "target": "yesboss-project-management-skill_project_operations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-project-management/SKILL.md",
+      "source_location": "Workflow: Creating a project",
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-project-management-skill_project_operations",
+      "target": "yesboss-admin-skill_rbac_check",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-project-management/SKILL.md",
+      "source_location": "Creating a project: step 2",
+      "weight": 1.0
+    },
+    {
+      "source": "yesboss-admin-skill_admin_operations",
+      "target": "yesboss-task-management-skill_task_operations",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "yesboss-admin-skill_admin_operations",
+      "target": "yesboss-project-management-skill_project_operations",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "openclaw-plugin-yesboss/skills/yesboss-admin/SKILL.md",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+      "target": "yesboss-task-management-skill_task_operations",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+      "target": "yesboss-project-management-skill_project_operations",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "target": "yesboss-admin-skill_rbac_check",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_communication_service",
+      "target": "yesboss-task-management-skill_whatsapp_response_format",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "temp-dashboard_task_status_enum",
+      "target": "yesboss-task-management-skill_status_values",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "temp-dashboard_dashboard_page",
+      "target": "apps-web-README_nextjs_project",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_types_package",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "SYSTEM_ARCHITECTURE_BLUEPRINT.md",
+      "source_location": "Section 3-4",
+      "weight": 0.85
+    },
+    {
+      "source": "apps-web-AGENTS_nextjs_agent_rules",
+      "target": "SYSTEM_ARCHITECTURE_BLUEPRINT_core_stack",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.6
+    },
+    {
+      "source": "temp-dashboard_project_store",
+      "target": "yesboss-project-management-skill_project_operations",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.7
+    },
+    {
+      "source": "temp-dashboard_task_store",
+      "target": "yesboss-task-management-skill_task_operations",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": null,
+      "source_location": null,
+      "weight": 0.7
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "hyperedge_openclaw_skill_user_resolution",
+      "label": "OpenClaw skill user resolution workflow: lookup user -> check role -> perform operation",
+      "node_ids": [
+        "yesboss-admin-skill_lookup_user_tool",
+        "yesboss-admin-skill_rbac_check",
+        "yesboss-admin-skill_admin_operations",
+        "yesboss-project-management-skill_project_operations",
+        "yesboss-task-management-skill_task_operations"
+      ],
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "hyperedge_microservice_package_dependency",
+      "label": "All microservices depend on shared packages (types, errors, utils) via workspace linking",
+      "node_ids": [
+        "SYSTEM_ARCHITECTURE_BLUEPRINT_auth_service",
+        "SYSTEM_ARCHITECTURE_BLUEPRINT_communication_service",
+        "SYSTEM_ARCHITECTURE_BLUEPRINT_workforce_service",
+        "SYSTEM_ARCHITECTURE_BLUEPRINT_types_package",
+        "SYSTEM_ARCHITECTURE_BLUEPRINT_errors_package",
+        "SYSTEM_ARCHITECTURE_BLUEPRINT_utils_package"
+      ],
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "hyperedge_dashboard_task_project_data_flow",
+      "label": "Dashboard aggregates data from both task and project stores with polling and computed metrics",
+      "node_ids": [
+        "temp-dashboard_dashboard_page",
+        "temp-dashboard_task_store",
+        "temp-dashboard_project_store",
+        "temp-dashboard_velocity_metric",
+        "temp-dashboard_efficiency_metric",
+        "temp-dashboard_upcoming_deadlines"
+      ],
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

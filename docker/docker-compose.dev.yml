@@ -93,6 +93,40 @@ services:
     networks:
       - yesboss-dev
 
+  # ---- Communication Service (Dev) ----
+  communication:
+    build:
+      context: ..
+      dockerfile: docker/communication.Dockerfile
+    command: ["npx", "tsx", "--watch", "apps/communication/src/index.ts"]
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      COMMUNICATION_PORT: 4000
+      MONGO_URI: mongodb://yesboss:devpassword@mongo:27017/yesboss?authSource=admin
+      JWT_PUBLIC_KEY_PATH: /app/keys/public.pem
+      YESBOSS_API_KEY: dev-api-key
+      AUTH_SERVICE_URL: http://auth:3001
+      WORKFORCE_SERVICE_URL: http://workforce:3002
+      OPENCLAW_GATEWAY_URL: http://host.docker.internal:18790
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-0230b8c7ee27846992bb9fc068db3e0b0441bcd061d9f65b}
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ../keys:/app/keys:ro
+      - ../apps/communication/src:/app/apps/communication/src:ro
+      - ../packages:/app/packages:ro
+    depends_on:
+      mongo:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      workforce:
+        condition: service_healthy
+    networks:
+      - yesboss-dev
+
   # ---- Web Frontend (Dev) ----
   web:
     build:

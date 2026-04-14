@@ -104,6 +104,42 @@ services:
     networks:
       - yesboss-net
 
+  # ---- Communication Service ----
+  communication:
+    build:
+      context: ..
+      dockerfile: docker/communication.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      COMMUNICATION_PORT: 4000
+      MONGO_URI: mongodb://yesboss:${MONGO_PASSWORD:-changeme}@mongo:27017/yesboss?authSource=admin
+      JWT_PUBLIC_KEY_PATH: /app/keys/public.pem
+      YESBOSS_API_KEY: ${YESBOSS_API_KEY:-changeme-to-secure-key}
+      AUTH_SERVICE_URL: http://auth:3001
+      WORKFORCE_SERVICE_URL: http://workforce:3002
+      OPENCLAW_GATEWAY_URL: ${OPENCLAW_GATEWAY_URL:-http://host.docker.internal:18790}
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      NODE_ENV: production
+    volumes:
+      - ${KEYS_DIR:-../keys}:/app/keys:ro
+    depends_on:
+      mongo:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      workforce:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - yesboss-net
+
   # ---- Web Frontend ----
   web:
     build:

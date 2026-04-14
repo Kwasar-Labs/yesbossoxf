@@ -52,18 +52,6 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "100M",
-    },
-    {
-      // OpenClaw gateway — WhatsApp + agent routing
-      // Windows: if this fails, change script to "openclaw.cmd"
-      name: "openclaw",
-      script: "openclaw",
-      args: "gateway start",
-      interpreter: "none",
-      instances: 1,
-      autorestart: true,
-      watch: false,
-      max_memory_restart: "256M",
-    },
+    }
   ],
 };

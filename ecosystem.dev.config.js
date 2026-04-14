@@ -9,7 +9,7 @@ module.exports = {
   apps: [
     {
       name: "yesboss-auth",
-      script: "./node_modules/.bin/tsx",
+      script: "./node_modules/.bin/tsx.cmd",
       args: "--watch apps/auth/src/index.ts",
       env: {
         AUTH_PORT: 3001,
@@ -22,7 +22,7 @@ module.exports = {
     },
     {
       name: "yesboss-workforce",
-      script: "./node_modules/.bin/tsx",
+      script: "./node_modules/.bin/tsx.cmd",
       args: "--watch apps/workforce/src/index.ts",
       env: {
         WORKFORCE_PORT: 3002,
@@ -35,7 +35,7 @@ module.exports = {
     },
     {
       name: "yesboss-communication",
-      script: "./node_modules/.bin/tsx",
+      script: "./node_modules/.bin/tsx.cmd",
       args: "--watch apps/communication/src/index.ts",
       env: {
         COMMUNICATION_PORT: 4000,
@@ -48,7 +48,7 @@ module.exports = {
     },
     {
       name: "yesboss-gateway",
-      script: "./node_modules/.bin/tsx",
+      script: "./node_modules/.bin/tsx.cmd",
       args: "--watch apps/dev-gateway/src/index.ts",
       env: {
         GATEWAY_PORT: 3000,
@@ -62,11 +62,9 @@ module.exports = {
     },
     {
       // OpenClaw gateway — WhatsApp + agent routing
-      // Windows: if this fails, change script to "openclaw.cmd"
       name: "openclaw",
-      script: "openclaw",
-      args: "gateway start",
-      interpreter: "none",
+      script: "cmd.exe",
+      args: "/c openclaw.cmd gateway start",
       autorestart: true,
       watch: false,
       max_memory_restart: "256M",

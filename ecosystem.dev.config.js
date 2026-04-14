@@ -9,8 +9,8 @@ module.exports = {
   apps: [
     {
       name: "yesboss-auth",
-      script: "./node_modules/.bin/tsx.cmd",
-      args: "--watch apps/auth/src/index.ts",
+      script: "node",
+      args: "./node_modules/tsx/dist/cli.mjs --watch apps/auth/src/index.ts",
       env: {
         AUTH_PORT: 3001,
         MONGO_URI: "mongodb://localhost:27017/yesboss",
@@ -25,8 +25,8 @@ module.exports = {
     },
     {
       name: "yesboss-workforce",
-      script: "./node_modules/.bin/tsx.cmd",
-      args: "--watch apps/workforce/src/index.ts",
+      script: "node",
+      args: "./node_modules/tsx/dist/cli.mjs --watch apps/workforce/src/index.ts",
       env: {
         WORKFORCE_PORT: 3002,
         MONGO_URI: "mongodb://localhost:27017/yesboss",
@@ -41,8 +41,8 @@ module.exports = {
     },
     {
       name: "yesboss-communication",
-      script: "./node_modules/.bin/tsx.cmd",
-      args: "--watch apps/communication/src/index.ts",
+      script: "node",
+      args: "./node_modules/tsx/dist/cli.mjs --watch apps/communication/src/index.ts",
       env: {
         COMMUNICATION_PORT: 4000,
         MONGO_URI: "mongodb://localhost:27017/yesboss",
@@ -57,8 +57,8 @@ module.exports = {
     },
     {
       name: "yesboss-gateway",
-      script: "./node_modules/.bin/tsx.cmd",
-      args: "--watch apps/dev-gateway/src/index.ts",
+      script: "node",
+      args: "./node_modules/tsx/dist/cli.mjs --watch apps/dev-gateway/src/index.ts",
       env: {
         GATEWAY_PORT: 3000,
         AUTH_PORT: 3001,
@@ -86,17 +86,6 @@ module.exports = {
       max_restarts: 5,
       restart_delay: 3000,
     },
-    {
-      // OpenClaw gateway — WhatsApp + agent routing
-      name: "openclaw",
-      script: "cmd.exe",
-      args: "/c openclaw.cmd gateway start",
-      autorestart: true,
-      watch: false,
-      max_memory_restart: "256M",
-      min_uptime: 5000,
-      max_restarts: 5,
-      restart_delay: 5000,
-    },
+    // OpenClaw: run separately → `openclaw gateway start`
   ],
 };

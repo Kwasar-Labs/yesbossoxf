@@ -42,9 +42,11 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 # Copy built app
-COPY --from=builder /app/apps/web/public ./public
+# standalone/ flattens the monorepo: server.js lives at apps/web/server.js
+# static + public must go alongside it so Next.js can serve them
 COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./.next/static
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 USER nextjs
 

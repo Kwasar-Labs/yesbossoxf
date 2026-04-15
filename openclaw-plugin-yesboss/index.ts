@@ -6,7 +6,7 @@
  */
 
 // @ts-ignore
-import { definePluginEntry, type AnyAgentTool } from "openclaw/plugin-sdk/plugin-entry";
+import type { AnyAgentTool } from "openclaw/plugin-sdk";
 
 // Task tools
 import { createCreateTaskTool } from "./src/tools/task-tools.js";
@@ -34,7 +34,7 @@ import { createLookupUserTool } from "./src/tools/user-tools.js";
 // Knowledge Tools
 import { createLearnFactTool, createSearchKnowledgeTool } from "./src/tools/knowledge-tools.js";
 
-export default definePluginEntry({
+const plugin = {
   id: "yesboss",
   name: "YesBoss Workforce Management",
   description:
@@ -74,4 +74,6 @@ export default definePluginEntry({
     api.registerTool(createLearnFactTool(config) as AnyAgentTool);
     api.registerTool(createSearchKnowledgeTool(config) as AnyAgentTool);
   },
-});
+};
+
+export default plugin;

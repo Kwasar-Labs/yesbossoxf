@@ -4,7 +4,7 @@
   "private": true,
   "description": "YesBoss workforce management platform — backend monorepo",
   "scripts": {
-    "dev": "concurrently \"pnpm run dev:auth\" \"pnpm run dev:workforce\" \"pnpm run dev:communication\" \"pnpm run dev:gateway\"",
+    "dev": "concurrently \"pnpm run dev:auth\" \"pnpm run dev:workforce\" \"pnpm run dev:communication\" \"pnpm run dev:gateway\" \"pnpm run dev:web\"",
     "dev:stop": "echo 'No longer using pm2'",
     "dev:logs": "echo 'Logs are now aggregated in the single terminal'",
     "dev:status": "echo 'Running concurrently'",
@@ -12,6 +12,7 @@
     "dev:workforce": "pnpm --filter @yesboss/workforce run dev",
     "dev:communication": "pnpm --filter @yesboss/communication run dev",
     "dev:gateway": "pnpm --filter @yesboss/dev-gateway run dev",
+    "dev:web": "pnpm --filter @yesboss/web run dev",
     "start": "pm2 start ecosystem.config.js",
     "stop": "pm2 delete all",
     "logs": "pm2 logs",

@@ -6,7 +6,7 @@ import { UserRole } from "@yesboss/types";
 
 const router = Router();
 
-router.get("/", authGuard, roleGuard(UserRole.ADMIN), ctrl.listUsers);
+router.get("/", authGuard, ctrl.listUsers);
 router.post("/", authGuard, roleGuard(UserRole.ADMIN), ctrl.createUser);
 router.get("/by-phone/:e164", apiKeyGuard, ctrl.getUserByPhone);
 router.get("/:id", dualAuth, ctrl.getUser);

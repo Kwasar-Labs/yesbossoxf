@@ -18,5 +18,6 @@
     "extensions": [
       "./index.ts"
     ]
-  }
+  },
+  "main": "dist/index.js"
 }

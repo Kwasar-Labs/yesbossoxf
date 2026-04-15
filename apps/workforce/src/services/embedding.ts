@@ -63,6 +63,32 @@ class VoyageEmbeddingProvider implements EmbeddingProvider {
   }
 }
 
+class GeminiEmbeddingProvider implements EmbeddingProvider {
+  name = "gemini";
+  constructor(private apiKey: string, private model: string, private dim: number) {}
+  async embed(texts: string[]): Promise<EmbeddingVector[]> {
+    const requests = texts.map((text) => ({
+      model: `models/${this.model}`,
+      content: { parts: [{ text }] },
+      outputDimensionality: this.dim,
+    }));
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:batchEmbedContents?key=${this.apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requests }),
+      }
+    );
+    if (!res.ok) {
+      const err = await res.text().catch(() => `HTTP ${res.status}`);
+      throw new Error(`Gemini embedding error: ${res.status} - ${err}`);
+    }
+    const json = (await res.json()) as { embeddings: Array<{ values: number[] }> };
+    return json.embeddings.map((e) => e.values);
+  }
+}
+
 let providerInstance: EmbeddingProvider | null | undefined;
 
 function getProvider(): EmbeddingProvider | null {
@@ -79,6 +105,9 @@ function getProvider(): EmbeddingProvider | null {
       break;
     case "voyage":
       providerInstance = new VoyageEmbeddingProvider(EMBEDDING_API_KEY, EMBEDDING_MODEL);
+      break;
+    case "gemini":
+      providerInstance = new GeminiEmbeddingProvider(EMBEDDING_API_KEY, EMBEDDING_MODEL, env.EMBEDDING_DIM);
       break;
     default:
       providerInstance = null;

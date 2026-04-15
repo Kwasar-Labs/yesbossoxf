@@ -19,7 +19,7 @@ export const env = {
   JWT_PUBLIC_KEY_PATH: resolveKey(process.env.JWT_PUBLIC_KEY_PATH, "./keys/public.pem"),
   YESBOSS_API_KEY: process.env.YESBOSS_API_KEY || "",
   // Embedding provider (optional). If missing, KB falls back to keyword search.
-  EMBEDDING_PROVIDER: (process.env.EMBEDDING_PROVIDER || "none") as "openai" | "voyage" | "local" | "none",
+  EMBEDDING_PROVIDER: (process.env.EMBEDDING_PROVIDER || "none") as "openai" | "voyage" | "gemini" | "local" | "none",
   EMBEDDING_MODEL: process.env.EMBEDDING_MODEL || "text-embedding-3-small",
   EMBEDDING_API_KEY: process.env.EMBEDDING_API_KEY || process.env.OPENAI_API_KEY || "",
   EMBEDDING_DIM: parseInt(process.env.EMBEDDING_DIM || "1536", 10),

@@ -4,33 +4,49 @@ import { toolResult } from "../tool-result.js";
 
 // --- Learn Fact ---
 const LearnFactSchema = Type.Object({
-  content: Type.String({ description: "The specific rule, SOP, preference or fact to remember" }),
+  content: Type.String({ description: "Specific rule, SOP, preference, skill or fact to remember." }),
   category: Type.Union([
-    Type.Literal("USER_SKILL"), 
-    Type.Literal("SOP"), 
-    Type.Literal("PROJECT_RULE"), 
-    Type.Literal("LESSON_LEARNED"), 
-    Type.Literal("OTHER")
-  ], { description: "Category of the knowledge fact" }),
-  reference_id: Type.Optional(Type.String({ description: "Optional ID of a User or Project this relates to" })),
-  tags: Type.Optional(Type.Array(Type.String(), { description: "Tags to categorize this fact" })),
+    Type.Literal("USER_SKILL"),
+    Type.Literal("SOP"),
+    Type.Literal("PROJECT_RULE"),
+    Type.Literal("LESSON_LEARNED"),
+    Type.Literal("PREFERENCE"),
+    Type.Literal("PEOPLE"),
+    Type.Literal("TERMINOLOGY"),
+    Type.Literal("OTHER"),
+  ], { description: "Category of the knowledge fact." }),
+  reference_id: Type.Optional(Type.String({ description: "Optional User or Project ID this relates to." })),
+  tags: Type.Optional(Type.Array(Type.String(), { description: "Tags for indexing." })),
   organization_id: Type.String({ description: "Organization ID" }),
+  source: Type.Optional(Type.Union([
+    Type.Literal("USER_TAUGHT"),
+    Type.Literal("AI_OBSERVED"),
+    Type.Literal("IMPORTED"),
+  ], { description: "Where this fact came from. Defaults USER_TAUGHT." })),
+  confidence: Type.Optional(Type.Number({ description: "0..1 confidence. Default 0.9 for user-taught, 0.5 for AI-observed." })),
+  expires_at: Type.Optional(Type.String({ description: "ISO date after which the fact is auto-deleted." })),
+  supersedes: Type.Optional(Type.String({ description: "ID of an older fact this replaces." })),
 }, { additionalProperties: false });
 
 export function createLearnFactTool(config?: { apiUrl?: string; apiKey?: string }) {
   return {
     name: "yesboss_learn_fact",
     label: "Learn Fact",
-    description: "Store a new important fact, SOP, user skill, or rule into the Knowledge Base for future semantic retrieval. Call this whenever you observe a persistent pattern or user asks you to remember something.",
+    description:
+      "Store a fact (SOP, skill, rule, preference, jargon, lesson) into the org knowledge base. Call when user teaches something or you observe a persistent pattern.",
     parameters: LearnFactSchema,
-    execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
+    execute: async (_toolCallId: string, raw: Record<string, unknown>) => {
       const body: Record<string, unknown> = {
-        organizationId: rawParams.organization_id,
-        content: rawParams.content,
-        category: rawParams.category
+        organizationId: raw.organization_id,
+        content: raw.content,
+        category: raw.category,
       };
-      if (rawParams.reference_id) body.referenceId = rawParams.reference_id;
-      if (rawParams.tags) body.tags = rawParams.tags;
+      if (raw.reference_id) body.referenceId = raw.reference_id;
+      if (raw.tags) body.tags = raw.tags;
+      if (raw.source) body.source = raw.source;
+      if (raw.confidence !== undefined) body.confidence = raw.confidence;
+      if (raw.expires_at) body.expiresAt = raw.expires_at;
+      if (raw.supersedes) body.supersedes = raw.supersedes;
 
       const result = await callYesBossApi("POST", "/workforce/knowledge", body, config);
       return toolResult(result);
@@ -40,30 +56,34 @@ export function createLearnFactTool(config?: { apiUrl?: string; apiKey?: string 
 
 // --- Search Knowledge ---
 const SearchKnowledgeSchema = Type.Object({
-  q: Type.Optional(Type.String({ description: "Semantic or keyword query to search for (e.g. 'who knows React' or 'vacation policy')" })),
-  category: Type.Optional(Type.String({ description: "Filter by category" })),
-  reference_id: Type.Optional(Type.String({ description: "Filter by specific Project or User ID" })),
+  q: Type.Optional(Type.String({ description: "Semantic / keyword query. Hybrid-scored if embeddings available." })),
+  category: Type.Optional(Type.String({ description: "Filter by category." })),
+  reference_id: Type.Optional(Type.String({ description: "Filter by Project or User ID." })),
+  tags: Type.Optional(Type.Array(Type.String(), { description: "Filter by tags." })),
   organization_id: Type.String({ description: "Organization ID" }),
+  limit: Type.Optional(Type.Number({ description: "Max results. Default 20." })),
+  min_confidence: Type.Optional(Type.Number({ description: "0..1 min confidence filter." })),
 }, { additionalProperties: false });
 
 export function createSearchKnowledgeTool(config?: { apiUrl?: string; apiKey?: string }) {
   return {
     name: "yesboss_search_knowledge",
     label: "Search Knowledge",
-    description: "Query the Knowledge Base for SOPs, rules, skills, and past lessons. Use this before creating tasks or when uncertain about standard procedures.",
+    description:
+      "Query the org knowledge base (SOPs, skills, preferences, rules, jargon, lessons). Always call BEFORE acting on ambiguous intent. Hybrid scored — semantic + keyword + tags + confidence + recency.",
     parameters: SearchKnowledgeSchema,
-    execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
-      const q = rawParams.q ? `?q=${encodeURIComponent(String(rawParams.q))}` : "";
-      let url = "/workforce/knowledge/search" + q;
-      
-      if (rawParams.category) {
-        url += (q ? "&" : "?") + "category=" + encodeURIComponent(String(rawParams.category));
+    execute: async (_toolCallId: string, raw: Record<string, unknown>) => {
+      const p = new URLSearchParams();
+      p.set("organizationId", String(raw.organization_id));
+      if (raw.q) p.set("q", String(raw.q));
+      if (raw.category) p.set("category", String(raw.category));
+      if (raw.reference_id) p.set("referenceId", String(raw.reference_id));
+      if (raw.limit !== undefined) p.set("limit", String(raw.limit));
+      if (raw.min_confidence !== undefined) p.set("minConfidence", String(raw.min_confidence));
+      if (raw.tags && Array.isArray(raw.tags) && raw.tags.length) {
+        p.set("tags", raw.tags.join(","));
       }
-      if (rawParams.reference_id) {
-        url += (url.includes('?') ? "&" : "?") + "referenceId=" + encodeURIComponent(String(rawParams.reference_id));
-      }
-      url += (url.includes('?') ? "&" : "?") + "organizationId=" + encodeURIComponent(String(rawParams.organization_id));
-
+      const url = "/workforce/knowledge/search?" + p.toString();
       const result = await callYesBossApi("GET", url, undefined, config);
       return toolResult(result);
     },

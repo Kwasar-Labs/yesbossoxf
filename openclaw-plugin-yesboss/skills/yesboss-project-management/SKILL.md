@@ -1,6 +1,6 @@
 ---
 name: yesboss-project-management
-description: "Manage projects in YesBoss. Use when the user wants to create, view, update, or delete projects. Admin users can create and delete projects."
+description: "Manage projects in YesBoss — create, list, inspect, update, delete. Create/delete require admin. Use when the user wants to work with projects, not tasks."
 metadata:
   openclaw:
     emoji: "📋"
@@ -8,40 +8,77 @@ metadata:
 
 # YesBoss Project Management
 
-Manage projects through WhatsApp.
+## Hard rules
 
-## Available tools
+1. Resolve user first. `yesboss_lookup_user(phone_e164)` — every turn unless session has it.
+2. Admin-only: `create_project`, `delete_project`, `update_project`. Check `role` from lookup.
+3. Destructive ops need explicit YES (see `yesboss-admin` skill for confirm pattern).
+4. Never fabricate project IDs. List, then pick.
 
-| Need | Tool |
-|------|------|
-| Create a project | `yesboss_create_project` |
-| List projects | `yesboss_list_projects` |
-| Get project details | `yesboss_get_project` |
-| Update a project | `yesboss_update_project` |
-| Delete a project | `yesboss_delete_project` |
+## Tool map
 
-## Workflow patterns
+| Intent | Tool | Admin? |
+|--------|------|--------|
+| Create | `yesboss_create_project` | yes |
+| List | `yesboss_list_projects` | no |
+| Detail | `yesboss_get_project` | no |
+| Update | `yesboss_update_project` | yes |
+| Delete | `yesboss_delete_project` | yes (+ YES) |
 
-### Creating a project
-When the user says "create project X" or "new project X":
-1. Resolve sender with `yesboss_lookup_user`
-2. Verify user is admin (only admins can create projects)
-3. Call `yesboss_create_project` with name and organization_id
-4. Confirm creation
+## Standard flows
 
-### Listing projects
-When the user asks "show projects" or "what projects do we have?":
-1. Call `yesboss_list_projects` with organization_id
-2. Format as a list with project name, status, and ID
+### Create
+1. Verify admin.
+2. Search KB for project naming SOP: `yesboss_search_knowledge({ q: "project naming", category: "SOP" })`.
+3. `yesboss_create_project({ name, organization_id, description? })`
+4. Reply: `📋 Project created: *name* — id: <id>`
 
-### Getting project details
-When the user asks about a specific project:
-1. Call `yesboss_get_project` with the project ID
-2. Show name, description, status, owners, and task summary
+### List
+`yesboss_list_projects({ organization_id })` → format: `• *name* (status) — id: <id>`
+Max 15 per reply. If more, say "showing 15 of N; ask for specific name to filter."
+
+### Detail
+`yesboss_get_project({ project_id })` → reply:
+```
+📋 *name*
+status: active
+owner: ...
+tasks: 12 open, 34 done
+```
+
+### Update
+Identify field (name, description, status). `yesboss_update_project` with only changed fields.
+
+### Delete
+1. Show what will be deleted (project + N tasks).
+2. `⚠️ Delete *name* and all its tasks? Reply YES.`
+3. `yesboss_set_confirmation` then wait.
+4. On YES: `yesboss_delete_project({ project_id, confirmed: true })`.
+
+## Matching project by name
+
+User mentions project loosely. Match strategy:
+1. Exact case-insensitive name → use it.
+2. Substring match → if single, use. If multiple, ask.
+3. No match → say so, suggest similar names (Levenshtein-closest from list).
+
+## Natural language map
+
+| User says | Action |
+|-----------|--------|
+| "new project X" / "create project X" / "start project X" | create_project |
+| "show projects" / "what projects" / "list projects" | list_projects |
+| "project X details" / "about project X" | get_project |
+| "rename project X to Y" | update_project name |
+| "archive X" / "close project X" | update_project status=archived |
+| "delete project X" | delete_project (admin + YES) |
 
 ## Response format
 
-Keep it WhatsApp-friendly:
-- Project name + status for lists
-- Full details only when specifically asked
-- Include project IDs for reference
+- Lists: one project per line, trim to 3 fields.
+- Detail: multi-line, include task summary.
+- Never include `organizationId` in user-facing text.
+
+## Examples / edge cases
+
+`references/examples.md` for full flows. `references/edge-cases.md` for ambiguity.

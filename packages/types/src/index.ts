@@ -17,5 +17,24 @@ export type { Team, TeamCreateInput, TeamUpdateInput } from "./team.js";
 export type { LoginRequest, LoginResponse, JwtPayload } from "./auth.js";
 export type { PhoneUserMapping, PhoneMappingCreateInput } from "./whatsapp-user.js";
 
-export { FactCategory } from "./enums/fact-category.js";
-export type { KnowledgeFact, KnowledgeFactCreateInput, KnowledgeFactUpdateInput } from "./knowledge.js";
+export { FactCategory, FactSource } from "./enums/fact-category.js";
+export type { KnowledgeFact, KnowledgeFactCreateInput, KnowledgeFactUpdateInput, KnowledgeSearchParams } from "./knowledge.js";
+
+// User memory
+export type {
+  UserMemory,
+  UserMemoryUpsertInput,
+  UserPreferences,
+  UserSkillEntry,
+  UserRecentContext,
+} from "./user-memory.js";
+
+// Conversation session
+export type {
+  ConversationSession,
+  ConversationTurn,
+  ConversationRole,
+  PendingConfirmation,
+  ActiveIntent,
+  SessionAppendInput,
+} from "./conversation.js";

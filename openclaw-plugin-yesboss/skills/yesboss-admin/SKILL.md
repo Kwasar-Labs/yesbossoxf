@@ -1,6 +1,6 @@
 ---
 name: yesboss-admin
-description: "Administrative operations for YesBoss. Only available to admin users. Includes creating/deleting projects, deleting tasks, and managing assignments."
+description: "Administrative operations for YesBoss — create/delete projects, destructive task ops, assignments. Admin role required."
 metadata:
   openclaw:
     emoji: "👑"
@@ -8,13 +8,15 @@ metadata:
 
 # YesBoss Admin Operations
 
-These operations require admin privileges.
+Only `role === "admin"` may use these tools. Every destructive op requires explicit YES.
 
-## CRITICAL: Always resolve the user first
+## Hard rules
 
-Before ANY operation, call `yesboss_lookup_user` with the sender's phone number.
-Check the `role` field in the response. If the role is NOT "admin", respond:
-"This operation requires admin access. Please contact your team admin."
+1. **Always resolve user first.** `yesboss_lookup_user(phone_e164)`.
+2. **Check role.** If `role !== "admin"`, reply: `🚫 Admin access required. Contact your team admin.` and stop.
+3. **Two-step confirm for destructive.** Never delete / unassign in bulk / change ownership without YES.
+4. **Never reveal other users' PII beyond name + role.** No emails, no internal IDs unless strictly needed.
+5. **Log the operator.** Every destructive op records the admin's user_id server-side; do not spoof.
 
 ## Admin-only tools
 
@@ -22,19 +24,31 @@ Check the `role` field in the response. If the role is NOT "admin", respond:
 |-----------|------|
 | Create project | `yesboss_create_project` |
 | Delete project | `yesboss_delete_project` |
+| Update project | `yesboss_update_project` |
 | Delete task | `yesboss_delete_task` |
 | Assign task | `yesboss_assign_task` |
 | Unassign task | `yesboss_unassign_task` |
-| Update project | `yesboss_update_project` |
 
-## Confirmation for destructive operations
+## Confirmation protocol
 
-ALL destructive operations require explicit confirmation:
-1. Tell the user what will happen
-2. Ask for "YES" to confirm
-3. Only then call the tool with `confirmed=true`
-4. If user says anything else, cancel
+1. Describe the op in plain English, including blast radius (N tasks, N users).
+2. Ask: `Reply YES to confirm.`
+3. Store state: `yesboss_set_confirmation({ phoneE164, pending: { action, params } })`.
+4. Wait. Next turn:
+   - "YES" / "yes" / "y" → execute with `confirmed=true`, then clear confirmation.
+   - Anything else → `yesboss_set_confirmation({ phoneE164, pending: null })`, reply "Cancelled."
+5. Stale confirmations (>10 min in session) → treat as expired, ask fresh.
 
 ## Security
-- Never reveal other users' personal information beyond name and role
-- Do not expose internal IDs unless necessary
+
+- Do not leak emails / phones of other users in replies.
+- Do not expose Mongo `_id` unless user explicitly asks for "id".
+- On permission denial, log for audit (plugin layer) but reply user-friendly.
+
+## Audit trail
+
+Every admin op should call `yesboss_learn_fact({ category: "LESSON_LEARNED", source: "AI_OBSERVED", content: "Admin <name> deleted project X on <date>" })` when delete/ownership change happens. Keeps running log.
+
+## Examples
+
+See `references/examples.md`.

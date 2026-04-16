@@ -72,22 +72,31 @@ export async function appendTurn(input: SessionAppendInput): Promise<SessionDocu
   else if (input.pendingConfirmation !== undefined)
     setFields.pendingConfirmation = input.pendingConfirmation;
 
-  const update: Record<string, unknown> = {
-    $setOnInsert: {
+  // MongoDB does not allow $setOnInsert and $push on the same field ("turns") in one op.
+  // Fix: ensure the document exists first (insertOne ignores duplicate key), then update.
+  try {
+    await col.insertOne({
       _id: new ObjectId(),
       phoneE164: input.phoneE164,
       turns: [],
+      expiresAt,
       createdAt: now,
-    },
+      updatedAt: now,
+    } as SessionDocument);
+  } catch (e: any) {
+    if (e?.code !== 11000) throw e; // only swallow duplicate-key
+  }
+
+  const updateOp: Record<string, unknown> = {
     $set: setFields,
     $push: { turns: { $each: [turn], $slice: -maxTurns } as any },
   };
-  if (Object.keys(unsetFields).length) update.$unset = unsetFields;
+  if (Object.keys(unsetFields).length) updateOp.$unset = unsetFields;
 
   const result = await col.findOneAndUpdate(
     { phoneE164: input.phoneE164 },
-    update,
-    { upsert: true, returnDocument: "after" }
+    updateOp,
+    { returnDocument: "after" }
   );
   return result!;
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { BarChart, Bar, ResponsiveContainer, Tooltip, Cell } from "recharts";
+import { BarChart, Bar, ResponsiveContainer, Tooltip, Cell, XAxis } from "recharts";
 import { TaskStatus } from "@/types";
 
 export function TaskSummaryChart({ tasks }: { tasks: { status: TaskStatus }[] }) {
-  const statusCounts = {
+  const counts = {
     [TaskStatus.TODO]: 0,
     [TaskStatus.IN_PROGRESS]: 0,
     [TaskStatus.IN_REVIEW]: 0,
@@ -12,27 +12,36 @@ export function TaskSummaryChart({ tasks }: { tasks: { status: TaskStatus }[] })
     [TaskStatus.CANCELLED]: 0,
   };
 
-  tasks.forEach((t) => {
-    if (statusCounts[t.status] !== undefined) {
-      statusCounts[t.status]++;
-    }
+  tasks.forEach(t => {
+    if (counts[t.status] !== undefined) counts[t.status]++;
   });
 
   const data = [
-    { name: "To Do", value: statusCounts[TaskStatus.TODO], color: "#9ca3af" },       // neutral-400
-    { name: "Progress", value: statusCounts[TaskStatus.IN_PROGRESS], color: "#38bdf8" }, // sky-400
-    { name: "Review", value: statusCounts[TaskStatus.IN_REVIEW], color: "#fbbf24" }, // amber-400
-    { name: "Done", value: statusCounts[TaskStatus.DONE], color: "#34d399" },        // emerald-400
-    { name: "Cancel", value: statusCounts[TaskStatus.CANCELLED], color: "#fb7185" }, // rose-400
+    { name: "To Do",     value: counts[TaskStatus.TODO],        color: "#9ca3af" },
+    { name: "Progress",  value: counts[TaskStatus.IN_PROGRESS], color: "#f59e0b" },
+    { name: "Review",    value: counts[TaskStatus.IN_REVIEW],   color: "#f97316" },
+    { name: "Done",      value: counts[TaskStatus.DONE],        color: "#10b981" },
+    { name: "Cancelled", value: counts[TaskStatus.CANCELLED],   color: "#f43f5e" },
   ];
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
-      <BarChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barSize={32}>
-        <Tooltip 
-          cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-          contentStyle={{ backgroundColor: '#141416', border: '1px solid #232325', borderRadius: '8px', color: '#fff' }}
-          itemStyle={{ color: '#c084fc' }}
+    <ResponsiveContainer width="100%" height={180}>
+      <BarChart data={data} barSize={28} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+          axisLine={false}
+          tickLine={false}
+        />
+        <Tooltip
+          cursor={{ fill: "var(--color-muted)", opacity: 0.4 }}
+          contentStyle={{
+            background: "var(--color-card)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "8px",
+            fontSize: "12px",
+          }}
+          itemStyle={{ color: "var(--color-foreground)" }}
           formatter={(value: any) => [value, "Tasks"]}
         />
         <Bar dataKey="value" radius={[4, 4, 0, 0]}>

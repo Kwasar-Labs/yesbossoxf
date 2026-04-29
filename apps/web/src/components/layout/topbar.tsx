@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { MessageSquare, Menu } from "lucide-react";
+import { MessageSquare, Menu, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/stores/ui-store";
 import { useAuthStore } from "@/stores/auth-store";
+import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +19,8 @@ const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/tasks": "Tasks",
   "/projects": "Projects",
-  "/admin": "Admin",
+  "/teams": "Team",
+  "/admin": "Settings",
   "/admin/users": "User Management",
   "/admin/teams": "Team Management",
   "/admin/organization": "Organization",
@@ -30,6 +32,7 @@ export function Topbar() {
   const { toggleChat } = useUIStore();
   const { user, logout } = useAuthStore();
   const { toggleSidebar } = useUIStore();
+  const { theme, setTheme } = useTheme();
 
   const title =
     pageTitles[pathname] ??
@@ -45,35 +48,50 @@ export function Topbar() {
     : "U";
 
   return (
-    <header className="flex h-14 items-center justify-between border-b bg-background px-4">
+    <header className="flex h-14 items-center justify-between border-b border-border bg-background px-4 shrink-0">
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden"
+          className="md:hidden h-8 w-8"
           onClick={toggleSidebar}
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-4 w-4" />
         </Button>
-        <h1 className="text-lg font-semibold">{title}</h1>
+        <h1 className="text-sm font-semibold text-foreground">{title}</h1>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
+        {/* Theme toggle */}
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
+          className="h-8 w-8"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          title="Toggle theme"
+        >
+          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        </Button>
+
+        {/* AI Chat */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
           onClick={toggleChat}
           title="AI Assistant"
         >
           <MessageSquare className="h-4 w-4" />
         </Button>
 
+        {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9">
-                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="text-xs bg-primary/15 text-primary font-semibold">{initials}</AvatarFallback>
                 </Avatar>
               </Button>
             }
@@ -92,6 +110,7 @@ export function Topbar() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
               onClick={() => {
                 logout();
                 router.push("/login");

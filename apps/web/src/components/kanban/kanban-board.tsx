@@ -192,68 +192,68 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 
       {/* Create task dialog */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent className="sm:max-w-2xl bg-[#0e0e0e] border-[#484847]/20 text-[#adaaaa] max-h-[85vh] flex flex-col pt-6">
-          <DialogTitle className="text-white">New Task</DialogTitle>
-          <div className="space-y-4 overflow-y-auto pr-2 pb-4 flex-1 mt-2 customized-scrollbar">
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col pt-6">
+          <DialogTitle>New Task</DialogTitle>
+          <div className="space-y-4 overflow-y-auto pr-2 pb-4 flex-1 mt-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Title</label>
-                  <Input className="bg-[#1a1a1a] border-[#484847]/20 text-white" placeholder="Task title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} autoFocus />
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Title</label>
+                  <Input placeholder="Task title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} autoFocus />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Description</label>
-                  <Textarea className="bg-[#1a1a1a] border-[#484847]/20 min-h-[100px] text-white" placeholder="Description" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Description</label>
+                  <Textarea className="min-h-[90px]" placeholder="Description (optional)" value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Priority</label>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Priority</label>
                   <Select value={newPriority} onValueChange={(v) => v && setNewPriority(v as Priority)}>
-                     <SelectTrigger className="bg-[#1a1a1a] border-[#484847]/20 text-white"><SelectValue /></SelectTrigger>
+                     <SelectTrigger><SelectValue /></SelectTrigger>
                      <SelectContent>
                         {Object.values(Priority).map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
                      </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Project</label>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Project</label>
                   <Select value={newProjectId} onValueChange={(v) => v && setNewProjectId(v)}>
-                     <SelectTrigger className="bg-[#1a1a1a] border-[#484847]/20 text-white"><SelectValue /></SelectTrigger>
+                     <SelectTrigger><SelectValue /></SelectTrigger>
                      <SelectContent>
                         <SelectItem value="none">No Project</SelectItem>
                         {projects.map(p => <SelectItem key={p._id} value={p._id}>{p.name}</SelectItem>)}
                      </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Assignee</label>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Assignee</label>
                   <Select value={newAssigneeId} onValueChange={(v) => v && setNewAssigneeId(v)}>
-                     <SelectTrigger className="bg-[#1a1a1a] border-[#484847]/20 text-white"><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                     <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
                      <SelectContent>
                         <SelectItem value="none">Unassigned</SelectItem>
                         {users.map(u => <SelectItem key={u._id} value={u._id}>{u.name}</SelectItem>)}
                      </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Due Date</label>
-                  <Input type="datetime-local" className="bg-[#1a1a1a] border-[#484847]/20 text-white" value={newDueDate} onChange={(e) => setNewDueDate(e.target.value)} />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Due Date</label>
+                  <Input type="datetime-local" value={newDueDate} onChange={(e) => setNewDueDate(e.target.value)} />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Follow-up Date</label>
-                  <Input type="datetime-local" className="bg-[#1a1a1a] border-[#484847]/20 text-white" value={newFollowUpDate} onChange={(e) => setNewFollowUpDate(e.target.value)} />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Follow-up Date</label>
+                  <Input type="datetime-local" value={newFollowUpDate} onChange={(e) => setNewFollowUpDate(e.target.value)} />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Tags (comma separated)</label>
-                  <Input className="bg-[#1a1a1a] border-[#484847]/20 text-white" placeholder="tag1, tag2" value={newTags} onChange={(e) => setNewTags(e.target.value)} />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Tags (comma separated)</label>
+                  <Input placeholder="tag1, tag2" value={newTags} onChange={(e) => setNewTags(e.target.value)} />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#8a8a8a]">Recurrence Rule</label>
-                  <Input className="bg-[#1a1a1a] border-[#484847]/20 text-white" placeholder="e.g. FREQ=WEEKLY" value={newRecurrence} onChange={(e) => setNewRecurrence(e.target.value)} />
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Recurrence Rule</label>
+                  <Input placeholder="e.g. FREQ=WEEKLY" value={newRecurrence} onChange={(e) => setNewRecurrence(e.target.value)} />
                 </div>
             </div>
           </div>
-          <DialogFooter className="shrink-0 pt-4 border-t border-[#484847]/20">
-            <Button variant="outline" onClick={() => setCreateOpen(false)} className="border-[#484847]/20 hover:bg-[#1a1a1a] hover:text-white">Cancel</Button>
-            <Button onClick={handleCreate} disabled={!newTitle.trim()} className="bg-gradient-to-b from-[#ba9eff] to-[#8455ef] text-[#39008c] hover:brightness-110 border-0">Create Task</Button>
+          <DialogFooter className="shrink-0 pt-4 border-t border-border">
+            <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={!newTitle.trim()}>Create Task</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

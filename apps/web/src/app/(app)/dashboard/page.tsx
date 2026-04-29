@@ -3,36 +3,63 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTaskStore } from "@/stores/task-store";
 import { useProjectStore } from "@/stores/project-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { TaskStatus } from "@/types";
-import { TaskSummaryChart } from "@/components/dashboard/task-summary-chart";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Zap, Activity, Battery, ChevronRight, BarChart3, AlertTriangle } from "lucide-react";
+import {
+  CheckSquare, Activity, FolderKanban, CheckCircle2,
+  Clock, AlertTriangle, Zap, ArrowRight, TrendingUp,
+} from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from "recharts";
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 18) return "Good afternoon";
+  return "Good evening";
+}
+
+const STATUS_COLORS = {
+  todo:        { pie: "#9ca3af", bar: "#9ca3af", bg: "bg-neutral-400" },
+  in_progress: { pie: "#f59e0b", bar: "#f59e0b", bg: "bg-amber-500" },
+  in_review:   { pie: "#f97316", bar: "#f97316", bg: "bg-orange-500" },
+  done:        { pie: "#10b981", bar: "#10b981", bg: "bg-emerald-500" },
+  cancelled:   { pie: "#f43f5e", bar: "#f43f5e", bg: "bg-rose-500" },
+};
 
 export default function DashboardPage() {
   const { tasks, fetchTasks, isLoading: tasksLoading } = useTaskStore();
   const { projects, fetchProjects } = useProjectStore();
+  const { user } = useAuthStore();
+  const [insights, setInsights] = useState<string[]>([]);
+  const [insightsLoading, setInsightsLoading] = useState(false);
 
   useEffect(() => {
     fetchTasks({ limit: 100 }, false);
     fetchProjects();
   }, [fetchTasks, fetchProjects]);
 
-  const inProgressCount = tasks.filter((t) => t.status === TaskStatus.IN_PROGRESS).length;
-  const inReviewCount = tasks.filter((t) => t.status === TaskStatus.IN_REVIEW).length;
-  const doneCount = tasks.filter((t) => t.status === TaskStatus.DONE).length;
-  const totalTasks = tasks.length;
-  const [insights, setInsights] = useState<string[]>([]);
-  const [insightsLoading, setInsightsLoading] = useState(false);
+  const todoCount       = tasks.filter(t => t.status === TaskStatus.TODO).length;
+  const inProgressCount = tasks.filter(t => t.status === TaskStatus.IN_PROGRESS).length;
+  const inReviewCount   = tasks.filter(t => t.status === TaskStatus.IN_REVIEW).length;
+  const doneCount       = tasks.filter(t => t.status === TaskStatus.DONE).length;
+  const cancelledCount  = tasks.filter(t => t.status === TaskStatus.CANCELLED).length;
+  const totalTasks      = tasks.length;
+  const velocity        = totalTasks > 0 ? ((doneCount / totalTasks) * 100).toFixed(1) : "0.0";
+
+  const upcomingDeadlines = tasks.filter(t => {
+    if (!t.dueDate) return false;
+    const due = new Date(t.dueDate).getTime();
+    return due > Date.now() && due < Date.now() + 48 * 3600 * 1000;
+  }).length;
 
   useEffect(() => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
-
+    const tid = setTimeout(() => controller.abort(), 8000);
     async function loadInsights() {
       setInsightsLoading(true);
       try {
@@ -43,240 +70,285 @@ export default function DashboardPage() {
           signal: controller.signal,
         });
         const data = await res.json();
-        if (data && data.data && data.data.insights) {
-          setInsights(data.data.insights);
-        }
+        if (data?.data?.insights) setInsights(data.data.insights);
       } catch (e) {
-        if ((e as Error).name !== "AbortError") {
-          console.error("Failed to load insights", e);
-        }
+        if ((e as Error).name !== "AbortError") console.error(e);
       } finally {
-        clearTimeout(timeoutId);
+        clearTimeout(tid);
         setInsightsLoading(false);
       }
     }
     loadInsights();
     return () => controller.abort();
   }, []);
-  
-  const velocity = totalTasks > 0 ? ((doneCount / totalTasks) * 100).toFixed(1) : "0.0";
-  const efficiency = totalTasks > 0 ? Math.round((doneCount + inProgressCount) / totalTasks * 100) : 0;
-  const upcomingDeadlines = tasks.filter(t => {
-    if (!t.dueDate) return false;
-    const dueTime = new Date(t.dueDate).getTime();
-    return dueTime > Date.now() && dueTime < Date.now() + 48 * 3600 * 1000;
-  }).length;
 
-  const recentActivity = useMemo(() => {
-    return tasks
+  const recentActivity = useMemo(() =>
+    tasks
       .slice()
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-      .slice(0, 5)
-      .map((t) => ({
-        id: t._id,
-        taskTitle: t.title,
-        status: t.status,
-        updatedAt: t.updatedAt as unknown as string,
-      }));
-  }, [tasks]);
+      .slice(0, 6)
+      .map(t => ({ id: t._id, taskTitle: t.title, status: t.status, updatedAt: t.updatedAt as unknown as string })),
+  [tasks]);
+
+  const pieData = [
+    { name: "To Do",       value: todoCount,       color: STATUS_COLORS.todo.pie },
+    { name: "In Progress", value: inProgressCount, color: STATUS_COLORS.in_progress.pie },
+    { name: "In Review",   value: inReviewCount,   color: STATUS_COLORS.in_review.pie },
+    { name: "Done",        value: doneCount,        color: STATUS_COLORS.done.pie },
+    { name: "Cancelled",   value: cancelledCount,   color: STATUS_COLORS.cancelled.pie },
+  ].filter(d => d.value > 0);
+
+  const barData = [
+    { name: "To Do",       value: todoCount,       fill: STATUS_COLORS.todo.bar },
+    { name: "Progress",    value: inProgressCount, fill: STATUS_COLORS.in_progress.bar },
+    { name: "Review",      value: inReviewCount,   fill: STATUS_COLORS.in_review.bar },
+    { name: "Done",        value: doneCount,        fill: STATUS_COLORS.done.bar },
+    { name: "Cancelled",   value: cancelledCount,   fill: STATUS_COLORS.cancelled.bar },
+  ];
+
+  const kpiCards = [
+    { label: "Total Tasks",  value: totalTasks,      icon: CheckSquare,  color: "text-amber-500",   bg: "bg-amber-500/10" },
+    { label: "In Progress",  value: inProgressCount, icon: Activity,     color: "text-orange-500",  bg: "bg-orange-500/10" },
+    { label: "Completed",    value: doneCount,        icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10" },
+    { label: "Projects",     value: projects.length,  icon: FolderKanban, color: "text-teal-500",    bg: "bg-teal-500/10" },
+  ];
+
+  const firstName = user?.name?.split(" ")[0] ?? "";
 
   return (
-    <div className="space-y-6 pt-4 pb-12 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-neutral-100">
+    <div className="space-y-5 pb-12 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       {/* Header */}
-      <div className="flex flex-col gap-1 mt-4 md:mt-0 mb-6 lg:mb-10">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Architect Pro Dashboard</h1>
-        <p className="text-sm font-medium text-neutral-400">Performance overview for Q3 Project Lifecycle</p>
+      <div className="flex items-start justify-between pt-2">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-5 h-5 rounded-md bg-primary flex items-center justify-center">
+              <Zap className="h-3 w-3 text-primary-foreground" />
+            </div>
+            <span className="text-[11px] font-bold text-primary uppercase tracking-widest">YesBoss</span>
+          </div>
+          <h1 className="text-xl font-bold text-foreground tracking-tight">
+            {getGreeting()}{firstName ? `, ${firstName}` : ""}
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          </p>
+        </div>
+        <Link href="/tasks">
+          <Button size="sm" className="hidden sm:flex items-center gap-1.5">
+            <ArrowRight className="h-3.5 w-3.5" />
+            View Tasks
+          </Button>
+        </Link>
       </div>
 
-      {/* Top 3-Col Layout */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* System Intelligence Panel */}
-        <Card className="col-span-2 border-neutral-800 bg-neutral-950/40 relative overflow-hidden backdrop-blur-xl">
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-600 via-pink-400 to-transparent opacity-80" />
-          <CardHeader className="pb-2">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="secondary" className="bg-indigo-900/40 text-indigo-400 text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest border-0">SYSTEM INTELLIGENCE</Badge>
-              <BarChart3 className="h-4 w-4 ml-auto text-neutral-500" />
-            </div>
-            <CardTitle className="text-2xl font-bold">Progress Summary</CardTitle>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-4 mt-4 relative z-10">
-            <div className="space-y-3">
-              <div className="rounded-lg bg-[#141416]/80 p-4 border border-[#232325]">
-                  <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-2">Task Progress</h4>
-                  <p className="text-sm text-neutral-200 leading-snug">
-                    {Number(velocity) > 0 ? `AI Context Analysis: The ecosystem is ready. You have cleared ${doneCount} of ${totalTasks} operations, achieving a structural completion rate of ${velocity}%.` : `AI Context Analysis: Initializing workflow parameters. Waiting for deployment on ${totalTasks} pending operations.`}
-                </p>
+      {/* KPI Row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpiCards.map(({ label, value, icon: Icon, color, bg }) => (
+          <Card key={label} className="border-border/60">
+            <CardContent className="p-5">
+              <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center mb-3", bg)}>
+                <Icon className={cn("h-4 w-4", color)} />
               </div>
-              <div className="rounded-lg bg-[#141416]/80 p-4 border border-[#232325]">
-                  <h4 className="text-[10px] font-bold tracking-wider text-teal-400 uppercase mb-2">Live Operations Insight</h4>
-                  <div className="text-sm text-neutral-200 leading-snug space-y-2">
-                    {insightsLoading ? (
-                      <span className="animate-pulse">Analyzing system state...</span>
-                    ) : insights.length > 0 ? (
-                      <ul className="list-disc list-inside text-xs text-neutral-300">
-                        {insights.map((insight, i) => (
-                          <li key={i} className="mb-1">{insight}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <span>{inProgressCount > 0 ? `System tracks ${inProgressCount} active operations in execution phase.` : `Standby mode active. No immediate operations detected.`}</span>
-                    )}
-                  </div>
-              </div>
-            </div>
-            <div className="rounded-lg bg-[#141416]/80 border border-[#232325] flex flex-col justify-end p-4 relative overflow-hidden items-start min-h-[140px]">
-               <div className="absolute inset-0 bg-gradient-to-t from-purple-900/30 to-transparent pointer-events-none"></div>
-               {/* Decorative dots grid */}
-               <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(168, 85, 247, 0.4) 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
-               <div className="relative z-10 flex flex-col gap-1 w-full mt-auto bg-black/40 p-2 rounded backdrop-blur-sm">
-                 <Link href="/tasks" className="flex justify-between items-center w-full hover:bg-white/5 py-0.5 px-1 rounded transition-colors cursor-pointer group">
-                   <span className="text-[10px] font-mono text-neutral-400 tracking-wider group-hover:text-white transition-colors">PENDING:</span>
-                   <span className="text-[10px] font-mono text-neutral-300 font-bold group-hover:text-white transition-colors">{tasks.filter((t) => t.status === TaskStatus.TODO).length} TASKS</span>
-                 </Link>
-                 <Link href="/tasks" className="flex justify-between items-center w-full hover:bg-white/5 py-0.5 px-1 rounded transition-colors cursor-pointer group">
-                   <span className="text-[10px] font-mono text-neutral-400 tracking-wider group-hover:text-amber-400 transition-colors">IN PROGRESS:</span>
-                   <span className="text-[10px] font-mono text-amber-500 font-bold group-hover:text-amber-400 transition-colors">{inProgressCount} TASKS</span>
-                 </Link>
-                 <Link href="/tasks" className="flex justify-between items-center w-full hover:bg-white/5 py-0.5 px-1 rounded transition-colors cursor-pointer group">
-                   <span className="text-[10px] font-mono text-neutral-400 tracking-wider group-hover:text-purple-400 transition-colors">IN REVIEW:</span>
-                   <span className="text-[10px] font-mono text-purple-500 font-bold group-hover:text-purple-400 transition-colors">{inReviewCount} TASKS</span>
-                 </Link>
-                 <Link href="/tasks" className="flex justify-between items-center w-full hover:bg-white/5 py-0.5 px-1 rounded transition-colors cursor-pointer group">
-                   <span className="text-[10px] font-mono text-neutral-400 tracking-wider group-hover:text-teal-400 transition-colors">COMPLETED:</span>
-                   <span className="text-[10px] font-mono text-teal-500 font-bold group-hover:text-teal-400 transition-colors">{doneCount} TASKS</span>
-                 </Link>
-               </div>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="text-3xl font-bold text-foreground tabular-nums">{value}</div>
+              <div className="text-xs text-muted-foreground mt-0.5 font-medium">{label}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        {/* Task Completion % & Status Stack */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-          <Card className="flex-1 bg-[#1c1c1e] border-neutral-800">
-            <CardHeader className="pb-2 flex flex-row items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-indigo-900/20 flex items-center justify-center">
-                <Zap className="h-4 w-4 text-purple-400" />
-               </div>
-               <span className="text-[10px] tracking-widest text-neutral-400 font-bold uppercase">Task Completion %</span>
-               <Activity className="h-10 w-10 text-neutral-800 ml-auto opacity-30" />
+      {/* Main content grid */}
+      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+
+        {/* Left — charts */}
+        <div className="space-y-5">
+
+          {/* Task breakdown */}
+          <Card className="border-border/60">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold">Task Breakdown</CardTitle>
+              <p className="text-xs text-muted-foreground">Status distribution across {totalTasks} tasks</p>
             </CardHeader>
             <CardContent>
-              <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-4xl font-bold tracking-tighter">{velocity}</span>
-                <span className="text-sm font-semibold text-emerald-400">%</span>
-              </div>
-              <p className="text-xs font-medium text-neutral-500">System throughput</p>
-              <div className="flex items-baseline gap-1 mb-3">
-                <span className="text-4xl font-bold tracking-tighter">{inProgressCount}</span>
-                <span className="text-sm font-medium text-neutral-500">/ {totalTasks === 0 ? 100 : totalTasks}</span>
-              </div>
-              <div className="h-1.5 w-full bg-neutral-800 rounded-full overflow-hidden">
-                <div className="h-full bg-teal-400 rounded-full" style={{ width: `${totalTasks > 0 ? (inProgressCount / totalTasks) * 100 : 0}%` }} />
-              </div>
+              {totalTasks === 0 ? (
+                <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
+                  No tasks yet
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  {/* Donut chart */}
+                  <div className="w-44 h-44 flex-shrink-0">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pieData}
+                          cx="50%" cy="50%"
+                          innerRadius={46} outerRadius={72}
+                          paddingAngle={3}
+                          dataKey="value"
+                          strokeWidth={0}
+                        >
+                          {pieData.map((entry, i) => (
+                            <Cell key={i} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: "8px", fontSize: "12px" }}
+                          itemStyle={{ color: "var(--color-foreground)" }}
+                          formatter={(v: any) => [v, "tasks"]}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="flex-1 space-y-2.5 w-full">
+                    {[
+                      { label: "To Do",       count: todoCount,       bg: STATUS_COLORS.todo.bg },
+                      { label: "In Progress", count: inProgressCount, bg: STATUS_COLORS.in_progress.bg },
+                      { label: "In Review",   count: inReviewCount,   bg: STATUS_COLORS.in_review.bg },
+                      { label: "Done",        count: doneCount,        bg: STATUS_COLORS.done.bg },
+                      { label: "Cancelled",   count: cancelledCount,   bg: STATUS_COLORS.cancelled.bg },
+                    ].map(({ label, count, bg }) => (
+                      <div key={label} className="flex items-center gap-2.5">
+                        <div className={cn("w-2 h-2 rounded-full flex-shrink-0", bg)} />
+                        <span className="text-xs text-muted-foreground flex-1">{label}</span>
+                        <span className="text-xs font-semibold tabular-nums w-6 text-right">{count}</span>
+                        <div className="w-20 h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div
+                            className={cn("h-full rounded-full", bg)}
+                            style={{ width: `${totalTasks > 0 ? (count / totalTasks) * 100 : 0}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Bar chart */}
+          <Card className="border-border/60">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold">Task Distribution</CardTitle>
+              <p className="text-xs text-muted-foreground">Count by status</p>
+            </CardHeader>
+            <CardContent>
+              {tasksLoading ? (
+                <div className="flex h-36 items-center justify-center">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={160}>
+                  <BarChart data={barData} barSize={28} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <Tooltip
+                      cursor={{ fill: "var(--color-muted)", opacity: 0.4 }}
+                      contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: "8px", fontSize: "12px" }}
+                      itemStyle={{ color: "var(--color-foreground)" }}
+                      formatter={(v: any) => [v, "tasks"]}
+                    />
+                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                      {barData.map((entry, i) => (
+                        <Cell key={i} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </CardContent>
           </Card>
         </div>
+
+        {/* Right — activity */}
+        <Card className="border-border/60">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold">Recent Activity</CardTitle>
+            <p className="text-xs text-muted-foreground">Latest task updates</p>
+          </CardHeader>
+          <CardContent className="h-[420px] overflow-hidden">
+            <ActivityFeed items={recentActivity} />
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Middle Grid */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_350px] xl:grid-cols-[1fr_400px]">
-        {/* Chart Card */}
-        <Card className="bg-[#1c1c1e] border-neutral-800 min-h-[300px] lg:min-h-[400px] flex flex-col">
-          <CardHeader className="flex flex-row items-center justify-between border-b border-neutral-800/50 pb-4">
-             <div className="flex flex-col">
-               <CardTitle className="text-base font-bold">Task Distribution</CardTitle>
-               <span className="text-xs text-neutral-500 font-medium">Allocated effort by department</span>
-             </div>
-             <div className="flex bg-[#141416] p-1 rounded-md">
-               <button className="px-3 py-1 text-[10px] font-bold rounded bg-neutral-800 text-white uppercase">Weekly</button>
-               <button className="px-3 py-1 text-[10px] font-bold rounded text-neutral-500 uppercase hover:text-white transition-colors">Monthly</button>
-             </div>
-          </CardHeader>
-          <CardContent className="flex-1 p-6 relative flex flex-col justify-end">
-            {tasksLoading ? (
-               <div className="flex h-full items-center justify-center">
-                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-               </div>
-            ) : (
-                <div className="flex-1 w-full relative">
-                   <TaskSummaryChart tasks={tasks} />
-                </div>
-            )}
-            <div className="flex justify-between mt-4 text-[10px] font-bold text-neutral-500 uppercase tracking-widest h-6 px-4">
-              <span>TODO</span>
-              <span>PROG</span>
-              <span>REV</span>
-              <span>DONE</span>
-              <span className="opacity-0 w-0 md:opacity-100 md:w-auto">CANCEL</span>
+      {/* Bottom stats */}
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+
+        {/* Completion rate */}
+        <Card className="border-border/60">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Completion Rate</span>
             </div>
+            <div className="flex items-baseline gap-1.5 mb-2">
+              <span className="text-3xl font-bold tabular-nums">{velocity}</span>
+              <span className="text-sm font-semibold text-emerald-500">%</span>
+            </div>
+            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden mb-2">
+              <div
+                className="h-full bg-emerald-500 rounded-full transition-all duration-700"
+                style={{ width: `${velocity}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">{doneCount} of {totalTasks} tasks complete</p>
           </CardContent>
         </Card>
 
-        {/* Activity Feed */}
-        <Card className="bg-[#1c1c1e] border-neutral-800 relative">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-base font-bold">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[350px] overflow-hidden">
-             <ActivityFeed items={recentActivity} />
+        {/* Upcoming deadlines */}
+        <Card className="border-border/60">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Clock className={cn("h-4 w-4", upcomingDeadlines > 0 ? "text-amber-500" : "text-muted-foreground")} />
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Upcoming Deadlines</span>
+            </div>
+            <div className="text-3xl font-bold tabular-nums mb-2">{upcomingDeadlines}</div>
+            {upcomingDeadlines > 0 ? (
+              <div className="flex items-center gap-1.5">
+                <AlertTriangle className="h-3 w-3 text-amber-500" />
+                <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">Due in next 48 hours</span>
+              </div>
+            ) : (
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">All clear for 48 hours</span>
+            )}
           </CardContent>
-          {/* Floating Action Button inside Activity Panel */}
-          <Link href="/tasks" className="absolute bottom-4 right-4 z-20 shadow-lg shadow-purple-900/30 rounded-xl hover:scale-105 transition-transform">
-             <Button size="icon" className="h-12 w-12 rounded-xl bg-purple-500 hover:bg-purple-600 text-white">
-                <ChevronRight className="h-6 w-6" />
-             </Button>
-          </Link>
         </Card>
+
+        {/* AI Insights */}
+        <Card className="border-border/60">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Zap className="h-4 w-4 text-primary" />
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">AI Insights</span>
+            </div>
+            {insightsLoading ? (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="h-3 w-3 animate-spin rounded-full border border-primary border-t-transparent" />
+                <span>Analyzing workspace...</span>
+              </div>
+            ) : insights.length > 0 ? (
+              <ul className="space-y-1.5">
+                {insights.slice(0, 3).map((ins, i) => (
+                  <li key={i} className="flex gap-1.5 text-xs text-muted-foreground leading-relaxed">
+                    <span className="text-primary flex-shrink-0 mt-0.5">·</span>
+                    <span>{ins}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                {inProgressCount > 0
+                  ? `${inProgressCount} task${inProgressCount > 1 ? "s" : ""} currently in progress.`
+                  : "No active tasks. Create a task to get started."}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
       </div>
-
-      {/* Bottom Summary Cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-         <Card className="bg-[#141416] border-neutral-800 relative overflow-hidden">
-             <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-400 to-purple-600" />
-             <CardContent className="p-6">
-                <div className="text-[10px] uppercase font-bold tracking-widest text-neutral-500 mb-4">Total Projects</div>
-                <div className="flex items-end justify-between">
-                   <div className="text-4xl font-extrabold">{projects.length}</div>
-                   <div className="text-right">
-                     <span className="block text-[10px] text-neutral-500">Currently active</span>
-                   </div>
-                </div>
-             </CardContent>
-         </Card>
-
-         <Card className="bg-[#141416] border-neutral-800 relative overflow-hidden">
-             <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-teal-400 to-emerald-400" />
-             <CardContent className="p-6">
-                <div className="text-[10px] uppercase font-bold tracking-widest text-neutral-500 mb-4">Team Efficiency</div>
-                <div className="flex items-end justify-between">
-                   <div className="text-4xl font-extrabold">{efficiency}%</div>
-                   <div className="text-right">
-                     <span className={cn("block text-xs font-bold", efficiency > 50 ? "text-teal-400" : "text-amber-500")}>{efficiency > 50 ? "Optimal" : "Lagging"}</span>
-                     <span className="block text-[10px] text-neutral-500">Current load</span>
-                   </div>
-                </div>
-             </CardContent>
-         </Card>
-
-         <Card className="bg-[#141416] border-neutral-800 relative overflow-hidden">
-             <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-orange-400 to-rose-400" />
-             <CardContent className="p-6">
-                <div className="text-[10px] uppercase font-bold tracking-widest text-neutral-500 mb-4">Upcoming Deadlines</div>
-                <div className="flex items-end justify-between">
-                   <div className="text-4xl font-extrabold">{String(upcomingDeadlines).padStart(2, '0')}</div>
-                   <div className="text-right flex flex-col justify-end">       
-                     <span className={cn("block text-xs font-bold flex items-center justify-end gap-1", upcomingDeadlines > 0 ? "text-amber-500" : "text-emerald-500")}>
-                        {upcomingDeadlines > 0 ? <><AlertTriangle className="w-3 h-3" /> Urgent</> : "Clear"}
-                     </span>
-                     <span className="block text-[10px] text-neutral-500">Next 48 hours</span>
-                   </div>
-                </div>
-             </CardContent>
-         </Card>
-      </div>
-
     </div>
   );
 }

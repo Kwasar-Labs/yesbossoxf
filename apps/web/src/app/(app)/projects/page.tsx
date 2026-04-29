@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, FolderKanban } from "lucide-react";
+import { Plus, FolderKanban, CheckCircle2, Activity, Circle, Clock } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -28,10 +28,17 @@ const statusGroups: { status: ProjectStatus; label: string }[] = [
 ];
 
 const statusBadge: Record<ProjectStatus, string> = {
-  [ProjectStatus.ACTIVE]: "bg-green-100 text-green-700",
-  [ProjectStatus.ON_HOLD]: "bg-yellow-100 text-yellow-700",
-  [ProjectStatus.COMPLETED]: "bg-blue-100 text-blue-700",
-  [ProjectStatus.ARCHIVED]: "bg-slate-100 text-slate-600",
+  [ProjectStatus.ACTIVE]:    "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  [ProjectStatus.ON_HOLD]:   "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  [ProjectStatus.COMPLETED]: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+  [ProjectStatus.ARCHIVED]:  "bg-muted text-muted-foreground",
+};
+
+const statusDot: Record<ProjectStatus, string> = {
+  [ProjectStatus.ACTIVE]:    "bg-emerald-500",
+  [ProjectStatus.ON_HOLD]:   "bg-amber-500",
+  [ProjectStatus.COMPLETED]: "bg-teal-500",
+  [ProjectStatus.ARCHIVED]:  "bg-muted-foreground",
 };
 
 export default function ProjectsPage() {
@@ -54,70 +61,120 @@ export default function ProjectsPage() {
     setCreateOpen(false);
   }
 
-  function getTaskCount(projectId: string) {
-    return tasks.filter((t) => t.projectId === projectId).length;
-  }
-
-  function getDoneCount(projectId: string) {
-    return tasks.filter((t) => t.projectId === projectId && t.status === TaskStatus.DONE).length;
+  function getProjectTasks(projectId: string) {
+    return tasks.filter(t => t.projectId === projectId);
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-10 w-full max-w-6xl mx-auto">
+
       <div className="flex items-center justify-between">
-        <div />
-        <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+        <div>
+          <h1 className="text-xl font-bold text-foreground tracking-tight">Projects</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">{projects.length} project{projects.length !== 1 ? "s" : ""} total</p>
+        </div>
+        <Button size="sm" onClick={() => setCreateOpen(true)}>
+          <Plus className="mr-1.5 h-3.5 w-3.5" />
           New Project
         </Button>
       </div>
 
       {isLoading ? (
         <div className="flex h-40 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="h-7 w-7 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       ) : (
         statusGroups.map((group) => {
-          const groupProjects = projects.filter((p) => p.status === group.status);
+          const groupProjects = projects.filter(p => p.status === group.status);
           if (groupProjects.length === 0) return null;
 
           return (
             <div key={group.status}>
-              <h3 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                {group.label}
-              </h3>
+              <div className="flex items-center gap-2 mb-3">
+                <div className={cn("w-2 h-2 rounded-full", statusDot[group.status])} />
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  {group.label}
+                </h3>
+                <span className="text-xs text-muted-foreground">({groupProjects.length})</span>
+              </div>
+
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {groupProjects.map((project) => (
-                  <Link key={project._id} href={`/projects/${project._id}`}>
-                    <Card className="transition-shadow hover:shadow-md cursor-pointer">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-2">
-                            <FolderKanban className="h-4 w-4 text-muted-foreground" />
-                            <h4 className="font-medium text-sm">{project.name}</h4>
+                {groupProjects.map((project) => {
+                  const ptasks = getProjectTasks(project._id);
+                  const total = ptasks.length;
+                  const done  = ptasks.filter(t => t.status === TaskStatus.DONE).length;
+                  const inProg = ptasks.filter(t => t.status === TaskStatus.IN_PROGRESS).length;
+                  const inRev  = ptasks.filter(t => t.status === TaskStatus.IN_REVIEW).length;
+                  const todo   = ptasks.filter(t => t.status === TaskStatus.TODO).length;
+                  const pct    = total > 0 ? Math.round((done / total) * 100) : 0;
+
+                  return (
+                    <Link key={project._id} href={`/projects/${project._id}`}>
+                      <Card className="transition-all hover:shadow-md hover:border-border cursor-pointer h-full border-border/60">
+                        <CardContent className="p-4">
+                          {/* Header */}
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                <FolderKanban className="h-4 w-4 text-primary" />
+                              </div>
+                              <h4 className="font-semibold text-sm text-foreground truncate">{project.name}</h4>
+                            </div>
+                            <Badge
+                              variant="secondary"
+                              className={cn("text-[10px] flex-shrink-0 ml-2 font-semibold border-0", statusBadge[project.status])}
+                            >
+                              {group.label}
+                            </Badge>
                           </div>
-                          <Badge variant="secondary" className={cn("text-xs", statusBadge[project.status])}>
-                            {group.label}
-                          </Badge>
-                        </div>
-                        {project.description && (
-                          <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
-                            {project.description}
-                          </p>
-                        )}
-                        <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
-                          <span>{getTaskCount(project._id)} tasks</span>
-                          <div className="flex-1 h-1.5 rounded-full bg-muted">
-                            <div
-                              className="h-1.5 rounded-full bg-primary"
-                              style={{ width: `${Math.min(100, (getDoneCount(project._id) / Math.max(1, getTaskCount(project._id))) * 100)}%` }}
-                            />
+
+                          {project.description && (
+                            <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
+                              {project.description}
+                            </p>
+                          )}
+
+                          {/* Task stats */}
+                          {total > 0 && (
+                            <div className="flex items-center gap-3 mb-3 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Circle className="h-3 w-3 text-neutral-400" />
+                                {todo}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Activity className="h-3 w-3 text-amber-500" />
+                                {inProg}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3 text-orange-500" />
+                                {inRev}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                                {done}
+                              </span>
+                              <span className="ml-auto text-[10px] font-semibold">{total} tasks</span>
+                            </div>
+                          )}
+
+                          {/* Progress bar */}
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-[10px] text-muted-foreground">
+                              <span>Progress</span>
+                              <span className="font-semibold">{pct}%</span>
+                            </div>
+                            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className="h-1.5 rounded-full bg-emerald-500 transition-all"
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           );
@@ -125,9 +182,18 @@ export default function ProjectsPage() {
       )}
 
       {projects.length === 0 && !isLoading && (
-        <div className="flex h-40 flex-col items-center justify-center text-muted-foreground">
-          <FolderKanban className="mb-2 h-10 w-10" />
-          <p>No projects yet. Create your first project!</p>
+        <div className="flex h-52 flex-col items-center justify-center gap-3 text-muted-foreground">
+          <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
+            <FolderKanban className="h-7 w-7" />
+          </div>
+          <div className="text-center">
+            <p className="text-sm font-medium">No projects yet</p>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">Create your first project to get started</p>
+          </div>
+          <Button size="sm" onClick={() => setCreateOpen(true)}>
+            <Plus className="mr-1.5 h-3.5 w-3.5" />
+            New Project
+          </Button>
         </div>
       )}
 
@@ -151,12 +217,8 @@ export default function ProjectsPage() {
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setCreateOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreate} disabled={!newName.trim()}>
-              Create
-            </Button>
+            <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={!newName.trim()}>Create</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

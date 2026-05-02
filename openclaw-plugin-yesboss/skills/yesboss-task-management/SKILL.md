@@ -16,7 +16,9 @@ Manage tasks from WhatsApp conversations.
 2. **Pass IDs as-is.** Do not parse, transform, or hand-write IDs.
 3. **Confirm before destructive ops.** Delete, bulk-reassign, status → `cancelled` need explicit "YES".
 4. **Consult KB before guessing.** If user says "normal priority for this kind of task" or "usual owner", call `yesboss_search_knowledge` first.
-5. **Short replies.** WhatsApp = ≤200 words, no markdown headings, lead with action taken.
+5. **Short replies.** WhatsApp = ≤10 lines, no markdown headings, lead with action taken.
+6. **"Yes Boss!" on commands.** See yesboss-conversation skill rules.
+7. **Always call the tool.** Never claim "no tasks" or "system unavailable" without first attempting the relevant tool call.
 
 ## Decision tree
 
@@ -24,10 +26,20 @@ Manage tasks from WhatsApp conversations.
 user message
  ├─ asks to CREATE? → resolve user → search KB for SOP → yesboss_create_task
  ├─ asks to LIST? → list tasks (mine vs all by cue)
+ ├─ "tasks from X" / "any tasks by X"? → see "Querying tasks by creator/context" below
  ├─ names specific task? → yesboss_get_task or update/status
  ├─ ambiguous? → set activeIntent, ask ONE clarifying question
  └─ destructive? → set pendingConfirmation, wait for YES
 ```
+
+## Querying tasks by creator or context
+
+When user asks "any tasks from Dr. Gill?" / "tasks Gurbeer sir gave me?" / "what did X assign to me?":
+1. Resolve current user (the asker) → get their `user_id`
+2. `yesboss_list_tasks({ organization_id, assignee_id: <asker_user_id> })` — all tasks assigned to them
+3. Also try `yesboss_list_tasks({ organization_id })` if context suggests "all org tasks from X"
+4. Filter/present tasks relevant to the named person (creator, assignee context)
+5. Never say "no tasks found" without trying the tool first
 
 ## Tool map
 
@@ -74,10 +86,12 @@ Before generating reply, check `yesboss_get_session(phone)` for:
 
 ## Response patterns
 
-Created: `✅ Task created: *deploy v2* (high) — id: abc123`
-Status: `🔄 deploy v2: todo → in_progress`
-Deleted: `🗑️ deploy v2 deleted`
-Error: `❌ Couldn't create task: <reason>. Try: <fix>`
+```
+Created:  Yes Boss! ✅ *[task title]* created ([priority]) — assigned to [real name].
+Status:   🔄 *[task title]*: todo → in_progress
+Deleted:  🗑️ *[task title]* deleted.
+Error:    ❌ Couldn't create task: <reason>.
+```
 
 ## Natural language map
 
@@ -93,6 +107,7 @@ Error: `❌ Couldn't create task: <reason>. Try: <fix>`
 | "assign X to Y" | assign_task |
 | "unassign X" / "remove Y from X" | unassign_task |
 | "break down X" / "decompose X" / "subtasks for X" | decompose_task |
+| "tasks from X" / "any tasks by X" | list + filter by assignee/org context |
 
 ## More examples, edge cases, and templates
 

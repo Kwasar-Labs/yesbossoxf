@@ -10,6 +10,8 @@ metadata:
 
 Turn epics into actionable plans. Assign by fit, not random.
 
+**"Yes Boss!" rule applies.** When user issues a decompose/plan command → start with `Yes Boss!`.
+
 ## When to decompose
 
 Trigger decomposition if:
@@ -22,7 +24,7 @@ Trigger decomposition if:
 1. **Consult KB** — `yesboss_search_knowledge({ q: "<epic keyword> SOP", category: "SOP" })`. Use any org-defined checklist first.
 2. **Consult templates** — see task skill's `references/templates.md` (bug / feature / deploy / onboarding / spike).
 3. **Call decomposer** — `yesboss_decompose_task({ description, organization_id, project_id?, context? })`. Returns proposed subtasks (title, tags, priority, suggested_assignee_id).
-4. **Present for approval** — list subtasks, ask "Create all? (YES) or edit (say 'edit')."
+4. **Present for approval** — list subtasks, ask `Create all? (YES) or edit.`
 5. **On YES** — create parent task, then loop create each subtask with `parent_task_id`. Copy tags + suggested assignee if accepted.
 6. **On edit** — set activeIntent to collect changes; user can drop / rename / re-assign items.
 
@@ -42,18 +44,16 @@ Prefer users with:
 
 If top candidate has >10 open tasks:
 - Suggest 2nd-place candidate.
-- Alert user: `ℹ️ Ravi has 12 open tasks. Suggest Priya instead — she has 3 and knows React.`
+- Alert: `ℹ️ [name] has [N] open tasks. Suggest [other name] instead — they have [N] and know [skill].`
 
 ## Plan replies
 
-Keep compact:
+Keep compact (fill with real assignees from tools — never use example names):
 ```
-🎯 Plan for *launch v2 website*:
-1. design mockups (design) → Priya
-2. frontend build (frontend) → Ravi
-3. backend API (backend) → Anil
-4. QA smoke tests (qa) → unassigned
-5. go-live checklist (ops) → Priya
+Yes Boss! 🎯 Plan for *[real epic title]*:
+1. [subtask 1] ([tag]) → [real assignee or unassigned]
+2. [subtask 2] ([tag]) → [real assignee or unassigned]
+3. [subtask 3] ([tag]) → [real assignee or unassigned]
 
 Create all? (YES) or edit.
 ```
@@ -63,7 +63,7 @@ Create all? (YES) or edit.
 After approved plan created:
 1. `learn_fact({ category: "LESSON_LEARNED", content: "Launch v2 plan: 5 subtasks, assigned by skill match", source: "AI_OBSERVED" })` — for future reuse.
 2. `push_recent_activity` per assignee.
-3. Reply: `✅ Plan created: 5 subtasks under *launch v2 website*.`
+3. Reply: `✅ 5 subtasks created under *launch v2 website*.`
 
 ## Examples
 

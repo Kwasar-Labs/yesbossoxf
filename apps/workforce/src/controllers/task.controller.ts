@@ -19,6 +19,10 @@ function toPublic(doc: any) {
     dueDate: doc.dueDate,
     createdBy: typeof doc.createdBy === "string" ? doc.createdBy : doc.createdBy.toHexString(),
     tags: doc.tags,
+    reminders: doc.reminders ?? [],
+    firedReminders: doc.firedReminders ?? [],
+    recurrenceRule: doc.recurrenceRule,
+    followUpDate: doc.followUpDate,
     organizationId: doc.organizationId.toHexString(),
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
@@ -30,9 +34,10 @@ function resolveOrgId(req: Request): string {
 }
 
 export const createTask = asyncHandler(async (req: Request, res: Response) => {
-  const { title, description, projectId, priority, assigneeId, dueDate, tags } = req.body as {
+  const { title, description, projectId, priority, assigneeId, dueDate, tags, reminders, recurrenceRule, followUpDate } = req.body as {
     title?: string; description?: string; projectId?: string; priority?: string;
     assigneeId?: string; dueDate?: string; tags?: string[];
+    reminders?: string[]; recurrenceRule?: string; followUpDate?: string;
   };
   if (!title) throw HttpError.badRequest("Title is required");
 
@@ -44,7 +49,7 @@ export const createTask = asyncHandler(async (req: Request, res: Response) => {
   const task = await TaskRepo.createTask({
     title, description, projectId,
     priority: priority as Priority | undefined,
-    assigneeId, dueDate, tags,
+    assigneeId, dueDate, tags, reminders, recurrenceRule, followUpDate,
     createdBy,
     organizationId: orgId,
   });
@@ -87,6 +92,9 @@ export const updateTask = asyncHandler(async (req: Request, res: Response) => {
     assigneeId?: string | null;
     subtasks?: any[];
     comments?: any[];
+    reminders?: string[];
+    recurrenceRule?: string | null;
+    followUpDate?: string | null;
   };
   const task = await TaskRepo.updateTask(param(req, "id"), body);
   if (!task) throw HttpError.notFound("Task");

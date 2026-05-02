@@ -10,9 +10,9 @@ metadata:
 
 Real-time team load awareness. Powers smart assignment suggestions.
 
-## Load model
+**"Yes Boss!" rule applies.** When Dr. Gill issues a command (e.g. "assign to someone free") → `Yes Boss!`. Questions (e.g. "who's free?") → answer directly.
 
-Venus defines **load** as:
+## Load model
 
 | Load level | # in-progress tasks | Label |
 |------------|---------------------|-------|
@@ -32,20 +32,21 @@ Overdue tasks count double toward load score.
 
 ## Availability reply to Dr. Gill
 
-When asked "who's free?" or before suggesting an assignee:
+Keep it short — one line per person. **Always call `yesboss_list_tasks` first — never use example names.**
 
+Format (fill with real data from tools):
 ```
 📡 Team availability:
 
-🟢 Sam — 1 task (available)
-🟡 Priya — 3 tasks (light)
-🟠 Anil — 5 tasks (occupied)
-🔴 Ravi — 8 tasks (overloaded ⚠️)
+🟢 [name] — [N] task(s)
+🟡 [name] — [N] tasks
+🟠 [name] — [N] tasks
+🔴 [name] — [N] tasks ⚠️
 ```
 
 Rules:
-- If everyone is overloaded: "Full house right now, Sir. Want to reassign or push a deadline?"
-- If someone is free + skilled for the task: proactively suggest: "Sam's free and knows QA — assign to her?"
+- If everyone overloaded: `Full house right now, Sir. Reassign something or push a deadline?`
+- If someone free + skilled: proactively suggest: `[name]'s free and knows [skill] — assign to them?`
 
 ## Smart assignment suggestion
 
@@ -54,26 +55,26 @@ When Dr. Gill says "assign X to someone" (no specific person):
 2. Check skills: `yesboss_search_knowledge({ q: task.tags, category: "USER_SKILL" })`
 3. Check `yesboss_get_user_memory(user_id)` skills array
 4. Pick: best skill match with lowest load
-5. Propose: `Best fit: Priya (React, 2 tasks). Assign? (YES/pick someone else)`
+5. Propose: `Best fit: [real name] ([skills], [N] tasks). Assign? (YES / pick someone else)`
 
 ## Overload escalation
 
 If a team member reaches 7+ tasks:
 - Flag proactively in next Dr. Gill summary
-- Store: `yesboss_learn_fact({ category: "PEOPLE", content: "[name] is overloaded ([N] tasks). May need workload review." source: "AI_OBSERVED" })`
+- Store: `yesboss_learn_fact({ category: "PEOPLE", content: "[name] is overloaded ([N] tasks). May need workload review.", source: "AI_OBSERVED" })`
 
 ## When team member asks about their own load
 
 **Member:** "what's on my plate?" / "how many tasks do I have?"
 1. `yesboss_list_my_tasks({ organization_id, user_id })`
-2. Reply: `You've got [N] open tasks, [M] in progress, [X] in review. [Lightest: task name]. Want the full list?`
-3. Fun tone: if 0 tasks → "You're all clear! Enjoy the calm before the storm 😄"
+2. Reply: `You've got [N] open — [M] in progress, [X] in review. Want the full list?`
+3. If 0 tasks → `All clear! Enjoy the quiet 😄`
 
 ## Availability in context
 
 Before creating/assigning any task, Venus should have a mental model ready:
 - Use cached session data if load was checked this session
-- Refresh if >30 min stale or if new tasks have been assigned
+- Refresh if >30 min stale or if new tasks have been assigned since last check
 
 ## Natural language
 
@@ -81,7 +82,7 @@ Before creating/assigning any task, Venus should have a mental model ready:
 |--------|--------|
 | "who's free?" / "who has bandwidth?" | Full availability list |
 | "who can take X?" | Skill-matched + load-ranked suggestion |
-| "is Ravi busy?" | Ravi's specific task count + status |
+| "is [name] busy?" | That person's task count + load level |
 | "who's overloaded?" | Show only 🔴 members |
-| "how many tasks does Priya have?" | Single-member load query |
+| "how many tasks does [name] have?" | Single-member load query |
 | "my tasks" / "what do I have?" | Member's own task list |

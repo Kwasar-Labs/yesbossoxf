@@ -8,6 +8,8 @@ metadata:
 
 # YesBoss Project Management
 
+**"Yes Boss!" rule applies.** Project commands → start with `Yes Boss!`. Queries → answer directly.
+
 ## Hard rules
 
 1. Resolve user first. `yesboss_lookup_user(phone_e164)` — every turn unless session has it.
@@ -31,18 +33,17 @@ metadata:
 1. Verify admin.
 2. Search KB for project naming SOP: `yesboss_search_knowledge({ q: "project naming", category: "SOP" })`.
 3. `yesboss_create_project({ name, organization_id, description? })`
-4. Reply: `📋 Project created: *name* — id: <id>`
+4. Reply: `Yes Boss! 📋 Project *name* created.`
 
 ### List
-`yesboss_list_projects({ organization_id })` → format: `• *name* (status) — id: <id>`
-Max 15 per reply. If more, say "showing 15 of N; ask for specific name to filter."
+`yesboss_list_projects({ organization_id })` → format: `• *name* (status)`
+Max 15 per reply. If more: `Showing 15 of N — ask for a name to filter.`
 
 ### Detail
 `yesboss_get_project({ project_id })` → reply:
 ```
 📋 *name*
 status: active
-owner: ...
 tasks: 12 open, 34 done
 ```
 
@@ -51,7 +52,9 @@ Identify field (name, description, status). `yesboss_update_project` with only c
 
 ### Delete
 1. Show what will be deleted (project + N tasks).
-2. `⚠️ Delete *name* and all its tasks? Reply YES.`
+2. Use natural language for client, standard for internal:
+   - Dr. Gill: `Delete *name* and all its tasks? Just reply Yes.`
+   - Internal: `⚠️ Delete *name* and all tasks? Reply YES.`
 3. `yesboss_set_confirmation` then wait.
 4. On YES: `yesboss_delete_project({ project_id, confirmed: true })`.
 

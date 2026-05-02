@@ -1,5 +1,7 @@
 # Knowledge — examples
 
+> ⚠️ **FICTIONAL EXAMPLE DATA** — Names like "Ravi", "Priya" are placeholders only. Never use them in real responses. All output must come from live tool calls.
+
 ### 1. Teach SOP
 **User:** "remember: all production deploys need QA sign-off before merging"
 1. `learn_fact({ organization_id, content: "All production deploys require QA sign-off before merging", category: "SOP", source: "USER_TAUGHT", confidence: 0.9 })`

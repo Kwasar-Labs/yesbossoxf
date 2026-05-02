@@ -1,5 +1,7 @@
 # Delegation — examples
 
+> ⚠️ **FICTIONAL EXAMPLE DATA** — Names like "Ravi", "Priya", "Anil" are placeholders only. Never use them in real responses. All output must come from live tool calls.
+
 ### 1. Explicit decompose
 **User:** "break down 'launch v2 website' into tasks"
 1. KB search SOP "website launch"

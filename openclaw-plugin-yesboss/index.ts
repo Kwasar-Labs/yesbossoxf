@@ -1,68 +1,52 @@
 /**
  * YesBoss OpenClaw Plugin Entry Point
- *
- * Registers all YesBoss management tools with the OpenClaw agent runtime.
  */
 
 // @ts-ignore
 import type { AnyAgentTool } from "openclaw/plugin-sdk";
 
-// Task tools
 import {
-  createCreateTaskTool,
-  createListTasksTool,
-  createGetTaskTool,
-  createUpdateTaskTool,
-  createDeleteTaskTool,
-  createUpdateTaskStatusTool,
+  createCreateTaskTool, createListTasksTool, createGetTaskTool,
+  createUpdateTaskTool, createDeleteTaskTool, createUpdateTaskStatusTool,
 } from "./src/tools/task-tools.js";
 
-// Project tools
 import {
-  createCreateProjectTool,
-  createListProjectsTool,
-  createGetProjectTool,
-  createUpdateProjectTool,
-  createDeleteProjectTool,
+  createCreateProjectTool, createListProjectsTool, createGetProjectTool,
+  createUpdateProjectTool, createDeleteProjectTool,
 } from "./src/tools/project-tools.js";
 
-// Assignment tools
 import {
-  createAssignTaskTool,
-  createUnassignTaskTool,
-  createListMyTasksTool,
+  createAssignTaskTool, createUnassignTaskTool, createListMyTasksTool,
 } from "./src/tools/assignment-tools.js";
 
-// User tools
 import { createLookupUserTool } from "./src/tools/user-tools.js";
 
-// Knowledge tools
+import {
+  createListUsersTool, createGetUserTool, createListPhoneMappingsTool,
+  createListTeamsTool, createGetTeamTool, createCreateTeamTool,
+  createUpdateTeamTool, createAddTeamMemberTool, createRemoveTeamMemberTool,
+} from "./src/tools/team-tools.js";
+
 import { createLearnFactTool, createSearchKnowledgeTool } from "./src/tools/knowledge-tools.js";
 
-// User memory tools
 import {
-  createGetUserMemoryTool,
-  createUpsertUserMemoryTool,
-  createPushRecentTool,
-  createAddUserSkillTool,
+  createGetUserMemoryTool, createUpsertUserMemoryTool,
+  createPushRecentTool, createAddUserSkillTool,
 } from "./src/tools/user-memory-tools.js";
 
-// Session tools
 import {
-  createGetSessionTool,
-  createAppendTurnTool,
-  createSetIntentTool,
-  createSetConfirmationTool,
+  createGetSessionTool, createAppendTurnTool,
+  createSetIntentTool, createSetConfirmationTool,
 } from "./src/tools/session-tools.js";
 
-// Decompose tools
 import { createDecomposeTaskTool } from "./src/tools/decompose-tools.js";
+
+import { createSendWaMessageTool } from "./src/tools/messaging-tools.js";
 
 const plugin = {
   id: "yesboss",
   name: "YesBoss Workforce Management",
-  description:
-    "Manage tasks, projects, teams, and org knowledge via WhatsApp. Create/update tasks, assign work, query the knowledge base, track conversation state, and decompose epics.",
+  description: "Manage tasks, projects, teams, users, and org knowledge via WhatsApp.",
 
   register(api: any) {
     const config = (api.pluginConfig || api.config?.plugins?.entries?.yesboss?.config) as
@@ -71,7 +55,7 @@ const plugin = {
 
     console.log("[yesboss-plugin] register() config:", JSON.stringify(config));
 
-    // Task tools
+    // Tasks
     api.registerTool(createCreateTaskTool(config) as AnyAgentTool);
     api.registerTool(createListTasksTool(config) as AnyAgentTool);
     api.registerTool(createGetTaskTool(config) as AnyAgentTool);
@@ -79,20 +63,29 @@ const plugin = {
     api.registerTool(createDeleteTaskTool(config) as AnyAgentTool);
     api.registerTool(createUpdateTaskStatusTool(config) as AnyAgentTool);
 
-    // Project tools
+    // Projects
     api.registerTool(createCreateProjectTool(config) as AnyAgentTool);
     api.registerTool(createListProjectsTool(config) as AnyAgentTool);
     api.registerTool(createGetProjectTool(config) as AnyAgentTool);
     api.registerTool(createUpdateProjectTool(config) as AnyAgentTool);
     api.registerTool(createDeleteProjectTool(config) as AnyAgentTool);
 
-    // Assignment tools
+    // Assignment
     api.registerTool(createAssignTaskTool(config) as AnyAgentTool);
     api.registerTool(createUnassignTaskTool(config) as AnyAgentTool);
     api.registerTool(createListMyTasksTool(config) as AnyAgentTool);
 
-    // User lookup
+    // Users & teams (full org access)
     api.registerTool(createLookupUserTool(config) as AnyAgentTool);
+    api.registerTool(createListUsersTool(config) as AnyAgentTool);
+    api.registerTool(createGetUserTool(config) as AnyAgentTool);
+    api.registerTool(createListPhoneMappingsTool(config) as AnyAgentTool);
+    api.registerTool(createListTeamsTool(config) as AnyAgentTool);
+    api.registerTool(createGetTeamTool(config) as AnyAgentTool);
+    api.registerTool(createCreateTeamTool(config) as AnyAgentTool);
+    api.registerTool(createUpdateTeamTool(config) as AnyAgentTool);
+    api.registerTool(createAddTeamMemberTool(config) as AnyAgentTool);
+    api.registerTool(createRemoveTeamMemberTool(config) as AnyAgentTool);
 
     // Knowledge base
     api.registerTool(createLearnFactTool(config) as AnyAgentTool);
@@ -104,7 +97,7 @@ const plugin = {
     api.registerTool(createPushRecentTool(config) as AnyAgentTool);
     api.registerTool(createAddUserSkillTool(config) as AnyAgentTool);
 
-    // Conversation session
+    // Session
     api.registerTool(createGetSessionTool(config) as AnyAgentTool);
     api.registerTool(createAppendTurnTool(config) as AnyAgentTool);
     api.registerTool(createSetIntentTool(config) as AnyAgentTool);
@@ -112,6 +105,9 @@ const plugin = {
 
     // Decomposition
     api.registerTool(createDecomposeTaskTool(config) as AnyAgentTool);
+
+    // Outbound messaging
+    api.registerTool(createSendWaMessageTool(config) as AnyAgentTool);
   },
 };
 

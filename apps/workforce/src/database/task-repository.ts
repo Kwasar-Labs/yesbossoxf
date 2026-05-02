@@ -18,6 +18,10 @@ interface TaskDocument {
   organizationId: ObjectId;
   subtasks?: any[];
   comments?: any[];
+  reminders?: Date[];
+  firedReminders?: Date[];
+  recurrenceRule?: string;
+  followUpDate?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,6 +38,9 @@ export async function createTask(input: {
   assigneeId?: string;
   dueDate?: string;
   tags?: string[];
+  reminders?: string[];
+  recurrenceRule?: string;
+  followUpDate?: string;
   createdBy: string;
   organizationId: string;
 }): Promise<TaskDocument> {
@@ -48,6 +55,10 @@ export async function createTask(input: {
     dueDate: input.dueDate ? new Date(input.dueDate) : undefined,
     createdBy: input.createdBy && input.createdBy !== "system" ? new ObjectId(input.createdBy) : (input.createdBy as any),
     tags: input.tags || [],
+    reminders: input.reminders?.map((r) => new Date(r)) ?? [],
+    firedReminders: [] as Date[],
+    recurrenceRule: input.recurrenceRule,
+    followUpDate: input.followUpDate ? new Date(input.followUpDate) : undefined,
     organizationId: new ObjectId(input.organizationId),
     createdAt: now,
     updatedAt: now,
@@ -99,10 +110,13 @@ export async function updateTask(id: string, input: {
   assigneeId?: string | null;
   subtasks?: any[];
   comments?: any[];
+  reminders?: string[];
+  recurrenceRule?: string | null;
+  followUpDate?: string | null;
 }): Promise<TaskDocument | null> {
   const update: Record<string, unknown> = { updatedAt: new Date() };
   if (input.title !== undefined) update.title = input.title;
-  if (input.description !== undefined) update.description = input.description;  
+  if (input.description !== undefined) update.description = input.description;
   if (input.projectId !== undefined) update.projectId = input.projectId ? new ObjectId(input.projectId) : null;
   if (input.priority !== undefined) update.priority = input.priority;
   if (input.dueDate !== undefined) update.dueDate = input.dueDate ? new Date(input.dueDate) : null;
@@ -110,9 +124,28 @@ export async function updateTask(id: string, input: {
   if (input.assigneeId !== undefined) update.assigneeId = input.assigneeId ? new ObjectId(input.assigneeId) : null;
   if (input.subtasks !== undefined) update.subtasks = input.subtasks;
   if (input.comments !== undefined) update.comments = input.comments;
+  if (input.reminders !== undefined) {
+    update.reminders = input.reminders.map((r) => new Date(r));
+    update.firedReminders = [];
+  }
+  if (input.recurrenceRule !== undefined) update.recurrenceRule = input.recurrenceRule;
+  if (input.followUpDate !== undefined) update.followUpDate = input.followUpDate ? new Date(input.followUpDate) : null;
 
   await getCollection().updateOne({ _id: new ObjectId(id) }, { $set: update });
   return findTaskById(id);
+}
+
+export async function findTasksWithDueReminders(before: Date): Promise<TaskDocument[]> {
+  return getCollection().find({
+    reminders: { $elemMatch: { $lte: before } },
+  }).toArray() as Promise<TaskDocument[]>;
+}
+
+export async function markReminderFired(id: string, reminderDate: Date): Promise<void> {
+  await getCollection().updateOne(
+    { _id: new ObjectId(id) },
+    { $addToSet: { firedReminders: reminderDate } },
+  );
 }
 
 export async function updateTaskStatus(id: string, status: TaskStatus): Promise<TaskDocument | null> {

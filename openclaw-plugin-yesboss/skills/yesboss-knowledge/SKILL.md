@@ -10,6 +10,8 @@ metadata:
 
 Persistent org memory — SOPs, preferences, who-knows-what. Powers better decisions.
 
+**"Yes Boss!" rule applies.** When user asks to remember/save something → `Yes Boss! Got it.` then store.
+
 ## When to SEARCH (read)
 
 Before acting, call `yesboss_search_knowledge` when:
@@ -56,7 +58,7 @@ Call `yesboss_learn_fact` when:
 | `PEOPLE` | Org knowledge about people | "Priya is the tech lead for payments" |
 | `TERMINOLOGY` | Org jargon → canonical | "shipit = deploy to production" |
 | `LESSON_LEARNED` | Retro outcome | "Migration 0042 broke because we didn't backfill first" |
-| `OTHER` | Everything else |
+| `OTHER` | Everything else | |
 
 ## Confidence
 

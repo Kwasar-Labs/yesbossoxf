@@ -1,5 +1,7 @@
 # Task management — worked examples
 
+> ⚠️ **FICTIONAL EXAMPLE DATA** — Names like "Ravi", "Priya" and tasks like "deploy v2" are placeholders only. Never use them in real responses. All output must come from live tool calls.
+
 Concrete WhatsApp → tool-call pairs. Match by shape, not exact wording.
 
 ---

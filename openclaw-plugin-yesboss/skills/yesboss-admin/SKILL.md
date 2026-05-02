@@ -10,6 +10,8 @@ metadata:
 
 Only `role === "admin"` may use these tools. Every destructive op requires explicit YES.
 
+**"Yes Boss!" rule applies.** Admin commands → start reply with `Yes Boss!`.
+
 ## Hard rules
 
 1. **Always resolve user first.** `yesboss_lookup_user(phone_e164)`.
@@ -22,6 +24,15 @@ Only `role === "admin"` may use these tools. Every destructive op requires expli
 
 | Operation | Tool |
 |-----------|------|
+| List all org members | `yesboss_list_users` |
+| Get user by ID | `yesboss_get_user` |
+| List all phone mappings | `yesboss_list_phone_mappings` |
+| List teams | `yesboss_list_teams` |
+| Get team | `yesboss_get_team` |
+| Create team | `yesboss_create_team` |
+| Update team | `yesboss_update_team` |
+| Add member to team | `yesboss_add_team_member` |
+| Remove member from team | `yesboss_remove_team_member` |
 | Create project | `yesboss_create_project` |
 | Delete project | `yesboss_delete_project` |
 | Update project | `yesboss_update_project` |
@@ -32,11 +43,13 @@ Only `role === "admin"` may use these tools. Every destructive op requires expli
 ## Confirmation protocol
 
 1. Describe the op in plain English, including blast radius (N tasks, N users).
-2. Ask: `Reply YES to confirm.`
+2. Ask using natural language — **never expose internal mechanism to clients:**
+   - For Dr. Gill: `Want me to go ahead and delete *project X*? Just reply Yes.`
+   - For internal users: `Reply YES to confirm.`
 3. Store state: `yesboss_set_confirmation({ phoneE164, pending: { action, params } })`.
 4. Wait. Next turn:
    - "YES" / "yes" / "y" → execute with `confirmed=true`, then clear confirmation.
-   - Anything else → `yesboss_set_confirmation({ phoneE164, pending: null })`, reply "Cancelled."
+   - Anything else → `yesboss_set_confirmation({ phoneE164, pending: null })`, reply `Cancelled.`
 5. Stale confirmations (>10 min in session) → treat as expired, ask fresh.
 
 ## Security

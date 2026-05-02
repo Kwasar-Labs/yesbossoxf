@@ -4,7 +4,7 @@
 
 import { Type } from "@sinclair/typebox";
 import { callYesBossApi } from "../yesboss-client.js";
-import { toolResult } from "../tool-result.js";
+import { toolResult, toolErrorFromThrown } from "../tool-result.js";
 
 // --- Assign Task ---
 const AssignTaskSchema = Type.Object({
@@ -12,7 +12,7 @@ const AssignTaskSchema = Type.Object({
   user_id: Type.String({ description: "User ID to assign the task to" }),
   organization_id: Type.String({ description: "Organization ID" }),
   confirmed: Type.Optional(Type.Boolean({ description: "Must be true to confirm reassignment" })),
-}, { additionalProperties: false });
+});
 
 export function createAssignTaskTool(config?: { apiUrl?: string; apiKey?: string }) {
   return {
@@ -21,14 +21,16 @@ export function createAssignTaskTool(config?: { apiUrl?: string; apiKey?: string
     description: "Assign a task to a user. If the task already has an assignee, this is a reassignment requiring confirmation. Admin only.",
     parameters: AssignTaskSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
-      // Directly update the task's assigneeId
-      const body = {
-        assigneeId: rawParams.user_id,
-        organizationId: rawParams.organization_id,
-      };
-
-      const result = await callYesBossApi("POST", `/workforce/tasks/${rawParams.task_id}/assign`, body, config);
-      return toolResult(result);
+      try {
+        const body = {
+          assigneeId: rawParams.user_id,
+          organizationId: rawParams.organization_id,
+        };
+        const result = await callYesBossApi("POST", `/workforce/tasks/${rawParams.task_id}/assign`, body, config);
+        return toolResult(result);
+      } catch (err) {
+        return toolErrorFromThrown(err);
+      }
     },
   };
 }
@@ -36,7 +38,7 @@ export function createAssignTaskTool(config?: { apiUrl?: string; apiKey?: string
 // --- Unassign Task ---
 const UnassignTaskSchema = Type.Object({
   task_id: Type.String({ description: "Task ID" }),
-}, { additionalProperties: false });
+});
 
 export function createUnassignTaskTool(config?: { apiUrl?: string; apiKey?: string }) {
   return {
@@ -45,8 +47,12 @@ export function createUnassignTaskTool(config?: { apiUrl?: string; apiKey?: stri
     description: "Remove the assignee from a task. Admin only.",
     parameters: UnassignTaskSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
-      const result = await callYesBossApi("POST", `/workforce/tasks/${rawParams.task_id}/unassign`, {}, config);
-      return toolResult(result);
+      try {
+        const result = await callYesBossApi("POST", `/workforce/tasks/${rawParams.task_id}/unassign`, {}, config);
+        return toolResult(result);
+      } catch (err) {
+        return toolErrorFromThrown(err);
+      }
     },
   };
 }
@@ -55,7 +61,7 @@ export function createUnassignTaskTool(config?: { apiUrl?: string; apiKey?: stri
 const ListMyTasksSchema = Type.Object({
   user_id: Type.String({ description: "User ID" }),
   organization_id: Type.String({ description: "Organization ID" }),
-}, { additionalProperties: false });
+});
 
 export function createListMyTasksTool(config?: { apiUrl?: string; apiKey?: string }) {
   return {
@@ -64,14 +70,16 @@ export function createListMyTasksTool(config?: { apiUrl?: string; apiKey?: strin
     description: "List all tasks assigned to a specific user.",
     parameters: ListMyTasksSchema,
     execute: async (_toolCallId: string, rawParams: Record<string, unknown>) => {
-      // Use the tasks endpoint filtered by assignee
-      const params = new URLSearchParams({
-        organizationId: rawParams.organization_id as string,
-        assigneeId: rawParams.user_id as string,
-      });
-
-      const result = await callYesBossApi("GET", `/workforce/tasks?${params.toString()}`, undefined, config);
-      return toolResult(result);
+      try {
+        const params = new URLSearchParams({
+          organizationId: rawParams.organization_id as string,
+          assigneeId: rawParams.user_id as string,
+        });
+        const result = await callYesBossApi("GET", `/workforce/tasks?${params.toString()}`, undefined, config);
+        return toolResult(result);
+      } catch (err) {
+        return toolErrorFromThrown(err);
+      }
     },
   };
 }

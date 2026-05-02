@@ -1,5 +1,7 @@
 # Admin — examples
 
+> ⚠️ **FICTIONAL EXAMPLE DATA** — Names like "Ravi", "Priya" are placeholders only. Never use them in real responses. All output must come from live tool calls.
+
 ### 1. Delete project (happy path)
 **Turn 1 user:** "delete project legacy"
 1. lookup → role=admin
